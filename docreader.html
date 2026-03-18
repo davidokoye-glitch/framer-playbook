@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DocReader — Universal Document Renderer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+/* ── EXACT FRAMER PLAYBOOK TOKENS ── */
+:root {
+  --bg:#fafaf9;--bg2:#f5f4f2;--bg3:#eeecea;
+  --sf:#fff;--sfh:#f7f6f4;
+  --b1:#e5e3df;--b2:#d6d3ce;
+  --t1:#1c1b19;--t2:#5c5954;--t3:#9b9895;
+  --ac:#2563eb;--acb:#eff6ff;--acbr:#bfdbfe;
+  --gn:#16a34a;--gnb:#f0fdf4;--gnbr:#bbf7d0;
+  --am:#b45309;--amb:#fffbeb;--ambr:#fde68a;
+  --pu:#6d28d9;--pub:#f5f3ff;--pubr:#ddd6fe;
+  --rd:#dc2626;--rdb:#fef2f2;--rdbr:#fecaca;
+  --sw:280px;
+  --r:8px;--rl:12px;--rx:16px;
+  --s1:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.05);
+  --s2:0 4px 12px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.05);
+  --s3:0 10px 30px rgba(0,0,0,.1),0 4px 8px rgba(0,0,0,.06);
+}
+[data-theme="dark"] {
+  --bg:#111110;--bg2:#191917;--bg3:#222220;
+  --sf:#1d1d1b;--sfh:#262624;
+  --b1:#2c2c29;--b2:#3a3a37;
+  --t1:#f0efec;--t2:#a8a5a0;--t3:#6b6966;
+  --ac:#3b82f6;--acb:#0f1f3d;--acbr:#1e3a5f;
+  --gn:#22c55e;--gnb:#052e16;--gnbr:#14532d;
+  --am:#f59e0b;--amb:#1c1400;--ambr:#78350f;
+  --pu:#a78bfa;--pub:#1e0f40;--pubr:#3b1f6e;
+  --rd:#f87171;--rdb:#2d0a0a;--rdbr:#7f1d1d;
+  --s1:0 1px 3px rgba(0,0,0,.4);
+  --s2:0 4px 12px rgba(0,0,0,.5);
+  --s3:0 10px 30px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--t1);-webkit-font-smoothing:antialiased;line-height:1.6;transition:background .25s,color .25s;}
+
+/* ── SCROLL BAR ── */
+.scbar{position:fixed;top:0;left:var(--sw);right:0;height:2px;z-index:1000;pointer-events:none;transition:left .25s;}
+.scfill{height:100%;background:linear-gradient(90deg,var(--ac),#7c3aed);width:0%;transition:width .08s;}
+
+/* ── APP SHELL ── */
+.app{display:flex;min-height:100vh;}
+
+/* ── SIDEBAR ── */
+.sidebar{width:var(--sw);background:var(--bg2);border-right:1px solid var(--b1);position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;overflow-y:auto;z-index:100;transition:transform .25s;}
+.sidebar::-webkit-scrollbar{width:0;}
+.sb-top{padding:18px 16px 14px;border-bottom:1px solid var(--b1);flex-shrink:0;}
+.brand{display:flex;align-items:center;gap:9px;margin-bottom:10px;cursor:pointer;}
+.b-icon{width:30px;height:30px;border-radius:8px;background:var(--t1);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .25s;}
+.b-icon svg{width:15px;height:15px;fill:var(--bg);}
+.b-name{font-size:13px;font-weight:700;color:var(--t1);letter-spacing:-.01em;}
+.b-sub{font-size:11px;color:var(--t3);margin-top:1px;word-break:break-word;line-height:1.4;}
+.doc-badge{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;background:var(--bg3);color:var(--t3);border:1px solid var(--b1);padding:3px 9px;border-radius:20px;letter-spacing:.02em;margin-top:6px;}
+.sb-nav{flex:1;padding:8px;overflow-y:auto;}
+.sb-nav::-webkit-scrollbar{width:0;}
+.ng{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--t3);padding:10px 8px 5px;}
+.nl{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;font-size:12.5px;font-weight:450;color:var(--t2);cursor:pointer;transition:background .12s,color .12s;position:relative;user-select:none;border:none;background:none;width:100%;text-align:left;font-family:inherit;}
+.nl:hover{background:var(--sfh);color:var(--t1);}
+.nl.active{background:var(--bg3);color:var(--t1);font-weight:550;}
+.nl.active::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:2.5px;border-radius:2px;background:var(--ac);}
+.ni{width:14px;height:14px;opacity:.55;flex-shrink:0;color:var(--t2);}
+.nl.active .ni{opacity:1;color:var(--ac);}
+.nl-label{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.sb-bot{padding:10px 8px;border-top:1px solid var(--b1);flex-shrink:0;}
+.tbtn-th{display:flex;align-items:center;gap:7px;width:100%;padding:7px 10px;border-radius:7px;background:var(--sf);border:1px solid var(--b1);color:var(--t2);font-family:inherit;font-size:12.5px;font-weight:500;cursor:pointer;transition:background .12s;}
+.tbtn-th:hover{background:var(--sfh);color:var(--t1);}
+.prog-row{display:flex;align-items:center;gap:8px;margin-top:8px;}
+.prog-track{flex:1;height:4px;background:var(--b1);border-radius:2px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--ac),#7c3aed);width:0%;transition:width .15s;border-radius:2px;}
+.prog-pct{font-size:11px;font-weight:600;color:var(--t3);min-width:28px;text-align:right;}
+.meta-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;padding:0 2px;}
+.meta-chip{font-size:10.5px;color:var(--t3);font-weight:500;display:flex;align-items:center;gap:3px;}
+
+/* ── MAIN ── */
+.main{margin-left:var(--sw);flex:1;min-width:0;transition:margin-left .25s;}
+
+/* ── TOPBAR ── */
+.topbar{position:sticky;top:0;z-index:50;height:50px;padding:0 44px;display:flex;align-items:center;justify-content:space-between;background:var(--bg);border-bottom:1px solid var(--b1);backdrop-filter:blur(10px);}
+.bc{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--t3);min-width:0;overflow:hidden;}
+.bc-home{color:var(--t3);font-weight:500;flex-shrink:0;cursor:pointer;transition:color .12s;}
+.bc-home:hover{color:var(--ac);}
+.bc-sep{opacity:.4;flex-shrink:0;}
+.bc strong{color:var(--t1);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.tbr{display:flex;align-items:center;gap:6px;flex-shrink:0;margin-left:16px;}
+.btn{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:6px;font-size:12px;font-weight:500;font-family:inherit;cursor:pointer;border:1px solid var(--b1);background:var(--sf);color:var(--t2);transition:background .12s,color .12s;white-space:nowrap;}
+.btn:hover{background:var(--sfh);color:var(--t1);}
+
+/* ── CONTENT ── */
+.content{padding:52px 52px 100px;max-width:940px;}
+
+/* ── HERO ── */
+.hero{margin-bottom:56px;}
+.h-eye{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ac);background:var(--acb);border:1px solid var(--acbr);padding:4px 11px;border-radius:20px;margin-bottom:18px;}
+.h-sub{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--t3);margin-bottom:14px;}
+.hero h1{font-size:36px;font-weight:800;letter-spacing:-.03em;line-height:1.15;color:var(--t1);margin-bottom:6px;}
+.hero-desc{font-size:16px;color:var(--t2);max-width:600px;line-height:1.7;margin-bottom:0;}
+
+/* ── SECTION ── */
+.doc-section{margin-bottom:60px;scroll-margin-top:70px;}
+.sh{display:flex;align-items:flex-start;gap:14px;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--b1);}
+.sn{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--t1);background:var(--bg3);border:1px solid var(--b1);padding:3px 9px;border-radius:5px;white-space:nowrap;margin-top:5px;flex-shrink:0;}
+.st h2{font-size:23px;font-weight:750;letter-spacing:-.022em;color:var(--t1);line-height:1.25;}
+.st p.st-desc{font-size:13.5px;color:var(--t3);margin-top:4px;}
+
+/* ── PROSE ── */
+.prose{font-size:14.5px;color:var(--t2);line-height:1.72;margin-bottom:16px;}
+.prose strong{color:var(--t1);font-weight:600;}
+.prose em{font-style:italic;}
+.prose a{color:var(--ac);text-decoration:underline;text-underline-offset:2px;}
+
+/* ── H3 / H4 ── */
+.doc-h3{font-size:16px;font-weight:700;color:var(--t1);letter-spacing:-.018em;margin:28px 0 10px;line-height:1.35;scroll-margin-top:70px;}
+.doc-h4{font-size:14px;font-weight:600;color:var(--t1);margin:20px 0 6px;scroll-margin-top:70px;}
+
+/* ── LISTS ── */
+.doc-list{font-size:14.5px;color:var(--t2);line-height:1.72;margin-bottom:16px;padding-left:20px;}
+.doc-list li{margin-bottom:5px;line-height:1.65;}
+.doc-list li::marker{color:var(--ac);}
+.doc-list strong{color:var(--t1);font-weight:600;}
+
+/* ── CALLOUT ── */
+.co{border:1px solid;border-radius:var(--r);padding:14px 16px;margin-bottom:16px;display:flex;gap:11px;align-items:flex-start;}
+.co-i{font-size:16px;flex-shrink:0;line-height:1.4;}
+.co-c{flex:1;min-width:0;}
+.co-t{font-size:13px;font-weight:600;margin-bottom:3px;}
+.co-b{font-size:13.5px;line-height:1.65;color:var(--t2);}
+.co-b strong{color:var(--t1);font-weight:600;}
+.co.blue{background:var(--acb);border-color:var(--acbr);}
+.co.blue .co-t{color:var(--ac);}
+.co.green{background:var(--gnb);border-color:var(--gnbr);}
+.co.green .co-t{color:var(--gn);}
+.co.amber{background:var(--amb);border-color:var(--ambr);}
+.co.amber .co-t{color:var(--am);}
+.co.purple{background:var(--pub);border-color:var(--pubr);}
+.co.purple .co-t{color:var(--pu);}
+.co.red{background:var(--rdb);border-color:var(--rdbr);}
+.co.red .co-t{color:var(--rd);}
+
+/* ── CODE BLOCK ── */
+.code-block{background:var(--bg2);border:1px solid var(--b1);border-radius:var(--rl);overflow:hidden;margin-bottom:18px;}
+.code-bar{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--b1);background:var(--bg3);}
+.code-lang{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t3);}
+.copy-btn{display:flex;align-items:center;gap:4px;background:var(--sf);border:1px solid var(--b1);border-radius:5px;padding:3px 9px;font-size:11px;font-weight:600;color:var(--t3);cursor:pointer;font-family:inherit;transition:all .15s;}
+.copy-btn:hover{background:var(--b1);color:var(--t1);}
+.copy-btn.copied{color:var(--gn);border-color:var(--gnbr);}
+.code-block pre{padding:16px;overflow-x:auto;margin:0;}
+.code-block pre code{font-family:'SF Mono','Fira Code','Cascadia Code',monospace;font-size:12.5px;color:var(--t2);line-height:1.7;background:none;border:none;padding:0;}
+code:not(pre code){font-family:'SF Mono','Fira Code',monospace;font-size:12.5px;background:var(--bg2);color:var(--t1);padding:2px 5px;border-radius:4px;border:1px solid var(--b1);}
+
+/* ── TABLE ── */
+.tw{overflow-x:auto;margin-bottom:18px;border-radius:var(--rl);border:1px solid var(--b1);}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead{background:var(--bg2);}
+th{padding:10px 14px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);white-space:nowrap;border-bottom:1px solid var(--b1);}
+td{padding:10px 14px;color:var(--t2);border-bottom:1px solid var(--b1);vertical-align:top;line-height:1.55;}
+td:first-child{color:var(--t1);font-weight:500;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:var(--sfh);}
+td strong{color:var(--t1);font-weight:600;}
+
+/* ── HR ── */
+hr{border:none;border-top:1px solid var(--b1);margin:28px 0;}
+
+/* ── IMAGES ── */
+.doc-img-wrap{margin-bottom:18px;}
+.doc-img-wrap img{max-width:100%;border-radius:var(--rl);border:1px solid var(--b1);display:block;}
+.doc-img-wrap figcaption{font-size:12px;color:var(--t3);margin-top:6px;text-align:center;font-style:italic;}
+
+/* ── FINAL / CLOSING BOX ── */
+.doc-final{background:var(--t1);border-radius:var(--rx);padding:36px 40px;margin-top:60px;position:relative;overflow:hidden;}
+.doc-final-eye{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.4);margin-bottom:12px;}
+.doc-final-t{font-size:22px;font-weight:800;color:#fff;margin-bottom:14px;letter-spacing:-.02em;}
+.doc-final-b{font-size:15px;color:rgba(255,255,255,.72);line-height:1.72;}
+.doc-final-b strong{color:rgba(255,255,255,.92);font-weight:600;}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.doc-section,.hero{animation:fadeUp .3s ease both;}
+
+/* ─────────────────── UPLOAD SCREEN ─────────────────── */
+#upload-screen{
+  position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:var(--bg);z-index:500;padding:24px;
+  transition:opacity .35s ease,transform .35s ease;
+}
+#upload-screen.hidden{opacity:0;transform:scale(.97);pointer-events:none;}
+.up-brand{display:flex;align-items:center;gap:10px;margin-bottom:48px;}
+.up-brand .b-icon{width:34px;height:34px;border-radius:10px;}
+.up-brand .b-icon svg{width:17px;height:17px;}
+.up-brand-text .b-name{font-size:16px;}
+.up-brand-text .b-sub{font-size:12px;color:var(--t3);}
+
+.drop-zone{
+  width:100%;max-width:480px;border:2px dashed var(--b2);border-radius:20px;
+  padding:56px 40px;text-align:center;cursor:pointer;
+  background:var(--sf);position:relative;overflow:hidden;
+  transition:border-color .2s,background .2s,transform .2s,box-shadow .2s;
+}
+.drop-zone::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(37,99,235,.06),transparent 70%);opacity:0;transition:opacity .3s;}
+.drop-zone:hover,.drop-zone.drag-over{border-color:var(--ac);transform:translateY(-2px);box-shadow:var(--s3),0 0 0 4px var(--acbr);}
+.drop-zone:hover::before,.drop-zone.drag-over::before{opacity:1;}
+.drop-ico-bg{width:52px;height:52px;background:var(--acb);border:1px solid var(--acbr);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;transition:transform .2s;}
+.drop-zone:hover .drop-ico-bg{transform:scale(1.08);}
+.drop-ico-bg svg{color:var(--ac);}
+.drop-title{font-size:18px;font-weight:800;color:var(--t1);letter-spacing:-.03em;margin-bottom:7px;}
+.drop-sub{font-size:13px;color:var(--t3);margin-bottom:24px;line-height:1.5;}
+.drop-cta{display:inline-flex;align-items:center;gap:6px;background:var(--t1);color:var(--bg);border:none;border-radius:8px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity .15s,transform .15s;}
+.drop-cta:hover{opacity:.85;transform:translateY(-1px);}
+.fmt-pills{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:22px;}
+.fmt-pill{background:var(--bg2);color:var(--t3);border:1px solid var(--b1);border-radius:999px;padding:3px 11px;font-size:11px;font-weight:700;letter-spacing:.01em;font-family:'SF Mono','Fira Code',monospace;}
+
+.up-theme-btn{position:fixed;top:18px;right:18px;background:var(--sf);border:1px solid var(--b1);border-radius:8px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--t2);transition:background .12s,transform .15s;box-shadow:var(--s1);}
+.up-theme-btn:hover{background:var(--sfh);transform:scale(1.06);}
+
+/* ── LOADING ── */
+#loading-overlay{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:600;opacity:0;pointer-events:none;transition:opacity .2s;}
+#loading-overlay.on{opacity:1;pointer-events:all;}
+.spinner{width:32px;height:32px;border:2.5px solid var(--b1);border-top-color:var(--ac);border-radius:50%;animation:spin .7s linear infinite;margin-bottom:14px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-lbl{font-size:13.5px;font-weight:500;color:var(--t3);}
+
+/* ── READER ── */
+#reader{display:none;min-height:100vh;}
+#reader.on{display:block;}
+
+/* ── MOBILE ── */
+.mob-btn{display:none;position:fixed;bottom:20px;right:20px;z-index:300;width:44px;height:44px;border-radius:50%;background:var(--t1);color:var(--bg);border:none;cursor:pointer;font-size:18px;align-items:center;justify-content:center;box-shadow:var(--s3);transition:background .25s;}
+#sb-back{display:none;position:fixed;inset:0;z-index:99;background:rgba(0,0,0,.45);backdrop-filter:blur(2px);}
+@media(max-width:860px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  #sb-back.on{display:block;}
+  .main{margin-left:0;}
+  .scbar{left:0;}
+  .content{padding:32px 24px 80px;}
+  .hero h1{font-size:28px;}
+  .topbar{padding:0 20px;}
+  .mob-btn{display:flex;}
+}
+@media(max-width:560px){.content{padding:24px 16px 80px;}}
+</style>
+</head>
+<body>
+
+<!-- Scroll progress bar -->
+<div class="scbar"><div class="scfill" id="scfill"></div></div>
+
+<!-- Loading overlay -->
+<div id="loading-overlay">
+  <div class="spinner"></div>
+  <p class="loading-lbl" id="loading-lbl">Parsing document…</p>
+</div>
+
+<!-- ═══ UPLOAD SCREEN ═══ -->
+<div id="upload-screen">
+  <div class="up-brand">
+    <div class="b-icon">
+      <svg viewBox="0 0 15 15"><path d="M2 2h4v4H2zm7 0h4v4H9zM2 9h4v4H2zm7 0h4v4H9z"/></svg>
+    </div>
+    <div class="up-brand-text">
+      <div class="b-name">DocReader</div>
+      <div class="b-sub">Universal document renderer</div>
+    </div>
+  </div>
+
+  <div class="drop-zone" id="drop-zone" role="button" tabindex="0" aria-label="Drop a document or click to upload">
+    <div class="drop-ico-bg">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/>
+        <path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/>
+      </svg>
+    </div>
+    <p class="drop-title">Drop any document here</p>
+    <p class="drop-sub">Drag &amp; drop a file, or browse from your device.<br>Parsed instantly — no upload, no server.</p>
+    <button class="drop-cta" id="browse-btn">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+        <polyline points="17 8 12 3 7 8"/>
+        <line x1="12" y1="3" x2="12" y2="15"/>
+      </svg>
+      Browse files
+    </button>
+    <div class="fmt-pills">
+      <span class="fmt-pill">.md</span>
+      <span class="fmt-pill">.txt</span>
+      <span class="fmt-pill">.pdf</span>
+      <span class="fmt-pill">.docx</span>
+      <span class="fmt-pill">.html</span>
+    </div>
+  </div>
+  <input type="file" id="file-input" accept=".md,.txt,.pdf,.docx,.html,.htm" style="display:none" />
+</div>
+
+<!-- Upload screen theme toggle -->
+<button class="up-theme-btn" id="up-theme-btn" aria-label="Toggle theme">
+  <svg id="up-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+    <circle cx="12" cy="12" r="5"/>
+    <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+    <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+  </svg>
+  <svg id="up-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+  </svg>
+</button>
+
+<!-- ═══ READER ═══ -->
+<div id="reader">
+  <div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sb-top">
+        <div class="brand" id="brand-back" title="Back to upload">
+          <div class="b-icon">
+            <svg viewBox="0 0 15 15"><path d="M2 2h4v4H2zm7 0h4v4H9zM2 9h4v4H2zm7 0h4v4H9z"/></svg>
+          </div>
+          <div>
+            <div class="b-name">DocReader</div>
+            <div class="b-sub" id="sb-doc-title">—</div>
+          </div>
+        </div>
+        <div class="doc-badge" id="doc-badge">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+          </svg>
+          document
+        </div>
+      </div>
+
+      <nav class="sb-nav" id="sb-nav" aria-label="Document navigation">
+        <!-- Populated by JS -->
+      </nav>
+
+      <div class="sb-bot">
+        <button class="tbtn-th" id="theme-btn" onclick="toggleTheme()">
+          <span id="ticon">🌙</span><span id="tlbl">Dark mode</span>
+        </button>
+        <div class="prog-row">
+          <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
+          <div class="prog-pct" id="prog-pct">0%</div>
+        </div>
+        <div class="meta-row">
+          <span class="meta-chip" id="wc-chip">— words</span>
+          <span class="meta-chip" style="opacity:.3">·</span>
+          <span class="meta-chip" id="rt-chip">— min read</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main" id="main-area">
+      <div class="topbar">
+        <div class="bc">
+          <span class="bc-home" id="bc-home">DocReader</span>
+          <span class="bc-sep">›</span>
+          <strong id="bc-cur">Document</strong>
+        </div>
+        <div class="tbr">
+          <button class="btn" id="new-file-btn">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/>
+              <path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/>
+            </svg>
+            New file
+          </button>
+        </div>
+      </div>
+
+      <div class="content" id="doc-content">
+        <!-- Rendered document injected here -->
+      </div>
+    </main>
+
+  </div><!-- .app -->
+
+  <!-- Mobile elements -->
+  <div id="sb-back"></div>
+  <button class="mob-btn" id="mob-btn" aria-label="Toggle sidebar">☰</button>
+</div><!-- #reader -->
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// PDF WORKER
+// ═══════════════════════════════════════════════════════════════
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+// ═══════════════════════════════════════════════════════════════
+// THEME
+// ═══════════════════════════════════════════════════════════════
+const ROOT = document.documentElement;
+
+function getTheme(){
+  return localStorage.getItem('dr-theme') ||
+    (window.matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light');
+}
+
+function applyTheme(t){
+  ROOT.setAttribute('data-theme', t);
+  localStorage.setItem('dr-theme', t);
+  const dark = t === 'dark';
+  document.getElementById('ticon').textContent  = dark ? '☀️' : '🌙';
+  document.getElementById('tlbl').textContent   = dark ? 'Light mode' : 'Dark mode';
+  document.getElementById('up-sun').style.display  = dark ? '' : 'none';
+  document.getElementById('up-moon').style.display = dark ? 'none' : '';
+}
+
+function toggleTheme(){
+  applyTheme(ROOT.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+}
+
+applyTheme(getTheme());
+document.getElementById('up-theme-btn').addEventListener('click', toggleTheme);
+
+// ═══════════════════════════════════════════════════════════════
+// NAVIGATION HELPERS
+// ═══════════════════════════════════════════════════════════════
+function showUpload(){
+  document.getElementById('reader').classList.remove('on');
+  document.getElementById('upload-screen').classList.remove('hidden');
+  document.title = 'DocReader — Universal Document Renderer';
+  window.removeEventListener('scroll', _scrollHandler);
+  window.scrollTo(0,0);
+}
+
+function showLoading(msg){
+  document.getElementById('loading-lbl').textContent = msg || 'Parsing…';
+  document.getElementById('loading-overlay').classList.add('on');
+}
+function hideLoading(){
+  document.getElementById('loading-overlay').classList.remove('on');
+}
+
+// Bind nav buttons
+document.getElementById('brand-back').addEventListener('click', showUpload);
+document.getElementById('bc-home').addEventListener('click', showUpload);
+document.getElementById('new-file-btn').addEventListener('click', showUpload);
+
+// Mobile sidebar
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sb-back').classList.remove('on');
+  document.body.style.overflow = '';
+}
+document.getElementById('mob-btn').addEventListener('click', () => {
+  const sb = document.getElementById('sidebar');
+  if(sb.classList.contains('open')){ closeSidebar(); }
+  else{
+    sb.classList.add('open');
+    document.getElementById('sb-back').classList.add('on');
+    document.body.style.overflow = 'hidden';
+  }
+});
+document.getElementById('sb-back').addEventListener('click', closeSidebar);
+
+// ═══════════════════════════════════════════════════════════════
+// FILE DROP / UPLOAD
+// ═══════════════════════════════════════════════════════════════
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+
+document.getElementById('browse-btn').addEventListener('click', e => { e.stopPropagation(); fileInput.click(); });
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('keydown', e => { if(e.key==='Enter'||e.key===' ') fileInput.click(); });
+fileInput.addEventListener('change', e => { if(e.target.files[0]) handleFile(e.target.files[0]); });
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault(); dropZone.classList.remove('drag-over');
+  if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+});
+document.addEventListener('dragover', e => e.preventDefault());
+document.addEventListener('drop', e => {
+  e.preventDefault();
+  const f = e.dataTransfer.files[0];
+  if(f && !document.getElementById('upload-screen').classList.contains('hidden')) handleFile(f);
+});
+
+// ═══════════════════════════════════════════════════════════════
+// FILE PARSERS
+// ═══════════════════════════════════════════════════════════════
+function readText(file){ return new Promise((res,rej) => { const fr=new FileReader(); fr.onload=e=>res(e.target.result); fr.onerror=rej; fr.readAsText(file); }); }
+function readBuf(file){ return new Promise((res,rej) => { const fr=new FileReader(); fr.onload=e=>res(e.target.result); fr.onerror=rej; fr.readAsArrayBuffer(file); }); }
+
+async function parseMarkdownFile(file){
+  const txt = await readText(file);
+  marked.setOptions({ gfm:true, breaks:false });
+  return marked.parse(txt);
+}
+async function parseTextFile(file){
+  const txt = await readText(file);
+  marked.setOptions({ gfm:true, breaks:true });
+  return marked.parse(txt);
+}
+async function parseHTMLFile(file){
+  const txt = await readText(file);
+  const dp = new DOMParser();
+  const doc = dp.parseFromString(txt, 'text/html');
+
+  // 1. Strip all non-content elements
+  doc.querySelectorAll(
+    'script, style, link, meta, noscript, iframe, object, embed, ' +
+    'header, footer, nav, aside, ' +
+    '.sidebar, .nav, .navbar, .navigation, .menu, .topbar, .header, .footer, ' +
+    '[class*="sidebar"], [class*="navbar"], [class*="nav-"], [id*="sidebar"], ' +
+    '[id*="navbar"], [id*="topbar"], [id*="header"], [id*="footer"], [id*="nav"], ' +
+    '[role="navigation"], [role="banner"], [role="complementary"], [role="contentinfo"]'
+  ).forEach(el => el.remove());
+
+  // 2. Try to find the most content-rich element in priority order
+  const contentSelectors = [
+    'main', 'article', '[role="main"]',
+    '.content', '.main', '.post', '.article', '.page', '.entry',
+    '.prose', '.body', '.text', '.doc', '.document',
+    '#content', '#main', '#post', '#article', '#page',
+    '.container', '.wrapper'
+  ];
+
+  for (const sel of contentSelectors) {
+    const el = doc.querySelector(sel);
+    if (el && el.textContent.trim().length > 200) {
+      // Found a content container — strip any remaining chrome inside it
+      el.querySelectorAll('nav, aside, header, footer, .sidebar, [class*="sidebar"]').forEach(e => e.remove());
+      return el.innerHTML;
+    }
+  }
+
+  // 3. Fallback: use body but aggressively remove chrome
+  // Remove elements that look like navigation/layout by their text-to-child ratio
+  if (doc.body) {
+    // Remove any direct children of body that have very little text content
+    // but lots of links (nav-like structures)
+    Array.from(doc.body.children).forEach(child => {
+      const links = child.querySelectorAll('a').length;
+      const text  = child.textContent.trim().length;
+      const tag   = child.tagName.toLowerCase();
+      // Kill elements that are nav-heavy relative to text, or known chrome tags
+      if (['nav','aside','header','footer'].includes(tag)) { child.remove(); return; }
+      if (links > 10 && text < 500) { child.remove(); return; }
+    });
+    return doc.body.innerHTML;
+  }
+
+  return txt;
+}
+async function parsePDF(file){
+  const buf = await readBuf(file);
+  const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+  let out = '';
+  for(let i=1; i<=pdf.numPages; i++){
+    showLoading(`Reading page ${i} of ${pdf.numPages}…`);
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    let lines=[], lastY=null;
+    for(const it of content.items){
+      if(lastY!==null && Math.abs(it.transform[5]-lastY)>4) lines.push('\n');
+      lines.push(it.str);
+      lastY = it.transform[5];
+    }
+    out += lines.join(' ') + '\n\n';
+  }
+  marked.setOptions({ gfm:true, breaks:true });
+  return marked.parse(out.trim());
+}
+async function parseDOCX(file){
+  const buf = await readBuf(file);
+  const res = await mammoth.convertToHtml({ arrayBuffer: buf });
+  return res.value;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MAIN FILE HANDLER
+// ═══════════════════════════════════════════════════════════════
+async function handleFile(file){
+  const name = file.name;
+  const ext = name.split('.').pop().toLowerCase();
+  showLoading(`Loading ${name}…`);
+  try{
+    let rawHTML = '';
+    if(ext==='md')                rawHTML = await parseMarkdownFile(file);
+    else if(ext==='txt')          rawHTML = await parseTextFile(file);
+    else if(ext==='html'||ext==='htm') rawHTML = await parseHTMLFile(file);
+    else if(ext==='pdf')          rawHTML = await parsePDF(file);
+    else if(ext==='docx')         rawHTML = await parseDOCX(file);
+    else                          rawHTML = await parseTextFile(file);
+
+    const title = name.replace(/\.[^.]+$/, '');
+    renderDocument(rawHTML, title, name, ext);
+  } catch(err){
+    console.error(err);
+    hideLoading();
+    const errHTML = `<p>⚠️ Could not parse file: <strong>${err.message}</strong></p>`;
+    renderDocument(errHTML, file.name, file.name, ext);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER DOCUMENT
+// ═══════════════════════════════════════════════════════════════
+function renderDocument(rawHTML, title, filename, ext){
+  const tmp = document.createElement('div');
+  tmp.innerHTML = rawHTML;
+  tmp.querySelectorAll('script,link,style').forEach(el => el.remove());
+
+  // Pre-process: merge orphan paragraphs, reclassify bold-only paras, etc.
+  preProcessNodes(tmp);
+
+  // Build layout — returns { frag, navItems }
+  const { frag, navItems } = buildPlaybookLayout(tmp, title);
+
+  const docContent = document.getElementById('doc-content');
+  docContent.innerHTML = '';
+  docContent.appendChild(frag);
+
+  // Metadata
+  const plainText = docContent.innerText || '';
+  const wordCount = plainText.trim().split(/\s+/).filter(Boolean).length;
+  const readMins  = Math.max(1, Math.round(wordCount / 230));
+  document.getElementById('wc-chip').textContent = wordCount.toLocaleString() + ' words';
+  document.getElementById('rt-chip').textContent = readMins + ' min read';
+
+  // Titles
+  const firstH1   = docContent.querySelector('h1');
+  const dispTitle = firstH1 ? firstH1.textContent.trim() : title;
+  document.getElementById('sb-doc-title').textContent = dispTitle;
+  document.getElementById('bc-cur').textContent       = dispTitle;
+  document.getElementById('doc-badge').innerHTML = `
+    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+      <polyline points="14 2 14 8 20 8"/>
+    </svg> ${escHTML(filename)}`;
+  document.title = dispTitle + ' — DocReader';
+
+  buildSidebarNav(navItems);
+
+  document.getElementById('upload-screen').classList.add('hidden');
+  document.getElementById('reader').classList.add('on');
+  hideLoading();
+  fileInput.value = '';
+  window.scrollTo(0, 0);
+  initScrollTracking(navItems);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PRE-PROCESS: fix common markdown rendering artifacts
+// ═══════════════════════════════════════════════════════════════
+function preProcessNodes(tmp){
+  const paras = Array.from(tmp.querySelectorAll('p'));
+
+  for(let i = 0; i < paras.length; i++){
+    const p = paras[i];
+    const text = p.textContent.trim();
+    const html = p.innerHTML.trim();
+
+    // Skip already-removed nodes
+    if(!p.parentNode) continue;
+
+    // 1. Merge continuation paragraphs:
+    //    A <p> that starts with ', ' or '. ' or lowercase (but not a sentence start)
+    //    and follows a non-empty <p> — merge into the previous sibling.
+    if(i > 0 && /^[,;]/.test(text)){
+      const prev = paras[i-1];
+      if(prev && prev.parentNode === p.parentNode){
+        prev.innerHTML = prev.innerHTML.trimEnd() + ' ' + html;
+        p.remove();
+        continue;
+      }
+    }
+
+    // 2. Very short paragraph (≤ 3 chars, e.g. single emoji, arrow, symbol)
+    //    Merge with the NEXT paragraph so it becomes an inline prefix.
+    if(text.length <= 3 && i < paras.length - 1){
+      const next = paras[i+1];
+      if(next && next.parentNode === p.parentNode){
+        next.innerHTML = html + ' ' + next.innerHTML.trimStart();
+        p.remove();
+        continue;
+      }
+    }
+
+    // 3. Bold-only paragraph acting as a sub-heading:
+    //    <p><strong>text</strong></p> with nothing else → upgrade to H3.
+    //    Only if the strong contains ≥ 4 chars (not just punctuation).
+    const children = Array.from(p.childNodes).filter(n =>
+      !(n.nodeType === 3 && !n.textContent.trim())
+    );
+    if(children.length === 1 && children[0].nodeName === 'STRONG'){
+      const strongText = children[0].textContent.trim();
+      if(strongText.length >= 4){
+        const h3 = document.createElement('h3');
+        h3.innerHTML = strongText;
+        p.parentNode.replaceChild(h3, p);
+        paras[i] = h3; // update reference (won't be queried as p anymore)
+        continue;
+      }
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PLAYBOOK LAYOUT BUILDER
+// Returns { frag: DocumentFragment, navItems: Array }
+// navItems: [{ id, label, level, children:[{id,label}] }]
+// ═══════════════════════════════════════════════════════════════
+let _secCounter = 0;
+
+function buildPlaybookLayout(tmp, docTitle){
+  _secCounter = 0;
+  const navItems = [];
+  const frag = document.createDocumentFragment();
+
+  // Get all meaningful child nodes (skip leading whitespace text nodes)
+  const allNodes = Array.from(tmp.childNodes).filter(n =>
+    !(n.nodeType === 3 && !n.textContent.trim())
+  );
+
+  // ── Find and extract H1 ──────────────────────────────────────
+  let heroTitle    = docTitle;
+  let heroLeadHTML = '';
+  let startIdx     = 0;
+
+  // Walk forward skipping any text/whitespace to find first element
+  const firstEl = allNodes.find(n => n.nodeType === 1);
+  if(firstEl && firstEl.nodeName === 'H1'){
+    heroTitle = firstEl.textContent.trim();
+    startIdx  = allNodes.indexOf(firstEl) + 1;
+    // Absorb the immediately following paragraph as hero lead text
+    const nextEl = allNodes[startIdx];
+    if(nextEl && nextEl.nodeName === 'P' && nextEl.textContent.trim().length < 300){
+      heroLeadHTML = nextEl.innerHTML;
+      startIdx++;
+    }
+  }
+
+  const heroEl = document.createElement('div');
+  heroEl.className = 'hero';
+  heroEl.id = 'doc-top';
+  heroEl.innerHTML = `
+    <div class="h-eye">📄 Document</div>
+    <div class="h-sub">Rendered by DocReader</div>
+    <h1>${heroTitle}</h1>
+    ${heroLeadHTML ? `<p class="hero-desc">${heroLeadHTML}</p>` : ''}
+  `;
+  frag.appendChild(heroEl);
+
+  const remaining = allNodes.slice(startIdx);
+
+  // ── Decide section split level ───────────────────────────────
+  // Use the shallowest heading level present after H1.
+  // Priority: H2 → H3 → H4. Fall back to rendering all as one block.
+  const splitLevel = detectSplitLevel(remaining);
+
+  // ── Split into groups ────────────────────────────────────────
+  const { ungrouped, groups } = splitByHeading(remaining, splitLevel);
+
+  // Pre-section content (intro)
+  if(ungrouped.length > 0){
+    const introSec = buildSection(null, ungrouped, navItems, 'intro');
+    frag.appendChild(introSec);
+  }
+
+  // Section groups
+  groups.forEach((g, idx) => {
+    const sec = buildSection(g.heading, g.children, navItems, idx + 1);
+    frag.appendChild(sec);
+  });
+
+  return { frag, navItems };
+}
+
+// Detect which heading level to use for sections
+function detectSplitLevel(nodes){
+  for(const level of ['H2','H3','H4']){
+    if(nodes.some(n => n.nodeName === level)) return level;
+  }
+  return null; // no headings found → single block
+}
+
+// Split a node array on a given heading tag name
+function splitByHeading(nodes, headingTag){
+  const groups    = [];
+  const ungrouped = [];
+  let current     = null;
+
+  for(const n of nodes){
+    if(n.nodeName === headingTag){
+      current = { heading: n, children: [] };
+      groups.push(current);
+    } else if(current){
+      current.children.push(n);
+    } else {
+      ungrouped.push(n);
+    }
+  }
+  return { groups, ungrouped };
+}
+
+// Build a single section element; push metadata into navItems
+function buildSection(headingNode, children, navItems, idx){
+  _secCounter++;
+  const sec = document.createElement('div');
+  sec.className = 'doc-section';
+
+  const label = headingNode ? headingNode.textContent.trim() : '';
+  const sid   = headingNode
+    ? 'sec-' + slugify(label) + '-' + _secCounter
+    : 'sec-intro-' + _secCounter;
+  sec.id = sid;
+
+  if(headingNode){
+    const sh = document.createElement('div');
+    sh.className = 'sh';
+
+    const badge = document.createElement('div');
+    badge.className = 'sn';
+    // Use "§ N" for numbered sections, or a custom prefix if present (e.g. "Part 1")
+    badge.textContent = '§ ' + (typeof idx === 'number' ? idx : _secCounter);
+
+    const st = document.createElement('div');
+    st.className = 'st';
+    const h2el = document.createElement('h2');
+    h2el.innerHTML = headingNode.innerHTML;
+    st.appendChild(h2el);
+
+    sh.appendChild(badge);
+    sh.appendChild(st);
+    sec.appendChild(sh);
+
+    // Register in nav
+    const navEntry = { id: sid, label, subs: [] };
+    navItems.push(navEntry);
+
+    // Also scan children for sub-headings to add to this entry
+    children.forEach(n => {
+      if(n.nodeName === 'H3' || n.nodeName === 'H4'){
+        const subLabel = n.textContent.trim();
+        const subId    = 'sub-' + slugify(subLabel) + '-' + Math.random().toString(36).slice(2,5);
+        n._docreaderId = subId; // store for later assignment
+        navEntry.subs.push({ id: subId, label: subLabel });
+      }
+    });
+  }
+
+  const rendered = renderChildNodes(children);
+  rendered.forEach(el => sec.appendChild(el));
+  return sec;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CHILD NODE RENDERER
+// ═══════════════════════════════════════════════════════════════
+function renderChildNodes(nodes){
+  const out = [];
+
+  for(let i = 0; i < nodes.length; i++){
+    const node = nodes[i];
+
+    // Text nodes
+    if(node.nodeType === 3){
+      if(node.textContent.trim()){
+        const p = document.createElement('p');
+        p.className = 'prose';
+        p.textContent = node.textContent.trim();
+        out.push(p);
+      }
+      continue;
+    }
+
+    const tag = node.nodeName;
+
+    // ── Headings ────────────────────────────────────────────────
+    if(tag === 'H3'){
+      const el  = document.createElement('div');
+      el.className = 'doc-h3';
+      // Use stored ID if set by buildSection (for nav registration)
+      const id = node._docreaderId || ('h3-' + slugify(node.textContent) + '-' + Math.random().toString(36).slice(2,5));
+      el.id = id;
+      el.innerHTML = node.innerHTML;
+      out.push(el);
+      continue;
+    }
+    if(tag === 'H4'){
+      const el = document.createElement('div');
+      el.className = 'doc-h4';
+      const id = node._docreaderId || ('h4-' + slugify(node.textContent) + '-' + Math.random().toString(36).slice(2,5));
+      el.id = id;
+      el.innerHTML = node.innerHTML;
+      out.push(el);
+      continue;
+    }
+    // H1 inside a section (rare, e.g. from docx) — render as large heading
+    if(tag === 'H1'){
+      const el = document.createElement('div');
+      el.className = 'doc-h3';
+      el.style.fontSize = '20px';
+      el.innerHTML = node.innerHTML;
+      out.push(el);
+      continue;
+    }
+
+    // ── Paragraph ───────────────────────────────────────────────
+    if(tag === 'P'){
+      // Image-only paragraph
+      if(node.children.length === 1 && node.children[0].tagName === 'IMG'){
+        out.push(buildImgWrap(node.children[0]));
+        continue;
+      }
+      const p = document.createElement('p');
+      p.className = 'prose';
+      p.innerHTML = node.innerHTML;
+      out.push(p);
+      continue;
+    }
+
+    // ── Lists ────────────────────────────────────────────────────
+    if(tag === 'UL' || tag === 'OL'){
+      const list = document.createElement(tag.toLowerCase());
+      list.className = 'doc-list';
+      list.innerHTML  = node.innerHTML;
+      out.push(list);
+      continue;
+    }
+
+    // ── Blockquote → Callout ─────────────────────────────────────
+    if(tag === 'BLOCKQUOTE'){
+      out.push(buildCallout(node));
+      continue;
+    }
+
+    // ── Code block ───────────────────────────────────────────────
+    if(tag === 'PRE'){
+      out.push(buildCodeBlock(node));
+      continue;
+    }
+
+    // ── Table ────────────────────────────────────────────────────
+    if(tag === 'TABLE'){
+      const tw = document.createElement('div');
+      tw.className = 'tw';
+      tw.appendChild(node.cloneNode(true));
+      out.push(tw);
+      continue;
+    }
+
+    // ── HR ───────────────────────────────────────────────────────
+    if(tag === 'HR'){
+      out.push(document.createElement('hr'));
+      continue;
+    }
+
+    // ── Images ───────────────────────────────────────────────────
+    if(tag === 'IMG'){
+      out.push(buildImgWrap(node));
+      continue;
+    }
+    if(tag === 'FIGURE'){
+      const w = document.createElement('div');
+      w.className = 'doc-img-wrap';
+      w.innerHTML = node.innerHTML;
+      out.push(w);
+      continue;
+    }
+
+    // ── Container elements → recurse ─────────────────────────────
+    if(['DIV','SECTION','ARTICLE','MAIN','ASIDE'].includes(tag)){
+      renderChildNodes(Array.from(node.childNodes)).forEach(el => out.push(el));
+      continue;
+    }
+
+    // Default passthrough
+    out.push(node.cloneNode(true));
+  }
+  return out;
+}
+
+// ── CALLOUT BUILDER ──────────────────────────────────────────
+function buildCallout(bq){
+  const raw = bq.textContent.trim();
+  let colorClass = 'blue', icon = '💡', label = 'Note';
+  if(/^\[!note\]/i.test(raw))       { colorClass='blue';   icon='ℹ️';  label='Note'; }
+  else if(/^\[!tip\]/i.test(raw))   { colorClass='green';  icon='✅';  label='Tip'; }
+  else if(/^\[!warning\]/i.test(raw)){ colorClass='amber'; icon='⚠️'; label='Warning'; }
+  else if(/^\[!danger\]/i.test(raw)||/^\[!caution\]/i.test(raw)){ colorClass='red'; icon='🛑'; label='Danger'; }
+  else if(/^\[!important\]/i.test(raw)){ colorClass='purple'; icon='✦'; label='Important'; }
+  let bodyHTML = bq.innerHTML.replace(/<p>\s*\[![^\]]+\]\s*/i, '<p>');
+  const co = document.createElement('div');
+  co.className = `co ${colorClass}`;
+  co.innerHTML = `<div class="co-i">${icon}</div><div class="co-c"><div class="co-t">${label}</div><div class="co-b">${bodyHTML}</div></div>`;
+  return co;
+}
+
+// ── CODE BLOCK BUILDER ───────────────────────────────────────
+function buildCodeBlock(pre){
+  const codeEl  = pre.querySelector('code');
+  const rawText = codeEl ? codeEl.textContent : pre.textContent;
+  let lang = 'code';
+  if(codeEl){ const m = codeEl.className.match(/language-(\S+)/); if(m) lang = m[1]; }
+  const wrap = document.createElement('div');
+  wrap.className = 'code-block';
+  wrap.innerHTML = `
+    <div class="code-bar">
+      <span class="code-lang">${escHTML(lang)}</span>
+      <button class="copy-btn">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+        </svg>Copy
+      </button>
+    </div>
+    <pre><code>${escHTML(rawText)}</code></pre>`;
+  wrap.querySelector('.copy-btn').addEventListener('click', function(){
+    navigator.clipboard.writeText(rawText).then(() => {
+      this.textContent = '✓ Copied!'; this.classList.add('copied');
+      setTimeout(() => { this.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy`; this.classList.remove('copied'); }, 2000);
+    }).catch(() => { this.textContent = 'Failed'; setTimeout(() => this.textContent = 'Copy', 2000); });
+  });
+  return wrap;
+}
+
+// ── IMAGE WRAPPER ────────────────────────────────────────────
+function buildImgWrap(img){
+  const wrap = document.createElement('div');
+  wrap.className = 'doc-img-wrap';
+  const clone = img.cloneNode(true);
+  clone.loading = 'lazy';
+  if(!clone.alt) clone.alt = '';
+  wrap.appendChild(clone);
+  if(clone.alt){ const cap = document.createElement('figcaption'); cap.textContent = clone.alt; wrap.appendChild(cap); }
+  return wrap;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SIDEBAR NAV — driven by navItems array, not DOM queries
+// navItems: [{ id, label, subs:[{id,label}] }]
+// ═══════════════════════════════════════════════════════════════
+function buildSidebarNav(navItems){
+  const nav = document.getElementById('sb-nav');
+  nav.innerHTML = '';
+
+  // Document group
+  const grpDoc = mkGroup('Document');
+  nav.appendChild(grpDoc);
+
+  // Top link (no data-sid → active when at very top)
+  const topBtn = mkNavBtn(iconDoc(), 'Top', null, true);
+  topBtn.addEventListener('click', () => { window.scrollTo({top:0,behavior:'smooth'}); if(window.innerWidth<=860)closeSidebar(); });
+  nav.appendChild(topBtn);
+
+  if(navItems.length === 0) return;
+
+  // Sections group
+  nav.appendChild(mkGroup('Sections'));
+
+  navItems.forEach(item => {
+    const btn = mkNavBtn(iconSection(), item.label, item.id);
+    btn.addEventListener('click', () => { document.getElementById(item.id)?.scrollIntoView({behavior:'smooth',block:'start'}); if(window.innerWidth<=860)closeSidebar(); });
+    nav.appendChild(btn);
+
+    // Sub-items (H3s inside this section)
+    item.subs.forEach(sub => {
+      const sbtn = mkNavBtn(iconSub(), sub.label, sub.id);
+      sbtn.style.cssText = 'padding-left:20px;font-size:12px;';
+      sbtn.addEventListener('click', () => { document.getElementById(sub.id)?.scrollIntoView({behavior:'smooth',block:'start'}); if(window.innerWidth<=860)closeSidebar(); });
+      nav.appendChild(sbtn);
+    });
+  });
+}
+
+function mkGroup(label){
+  const d = document.createElement('div');
+  d.className = 'ng';
+  d.textContent = label;
+  return d;
+}
+function mkNavBtn(iconSVG, label, dataId, active){
+  const btn = document.createElement('button');
+  btn.className = 'nl' + (active?' active':'');
+  if(dataId) btn.setAttribute('data-sid', dataId);
+  btn.innerHTML = `${iconSVG}<span class="nl-label" title="${escHTML(label)}">${escHTML(label)}</span>`;
+  return btn;
+}
+function iconDoc(){ return `<svg class="ni" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 1.5a5.5 5.5 0 110 11 5.5 5.5 0 010-11zm0 2a.75.75 0 00-.75.75v3.19l-1.72 1.72a.75.75 0 101.06 1.06l2-2A.75.75 0 009.25 8.5V5.25A.75.75 0 008 4.5z"/></svg>`; }
+function iconSection(){ return `<svg class="ni" viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A.5.5 0 012.5 2h11a.5.5 0 010 1h-11A.5.5 0 012 2.5zm0 3A.5.5 0 012.5 5h11a.5.5 0 010 1h-11A.5.5 0 012 5.5zm0 3A.5.5 0 012.5 8h7a.5.5 0 010 1h-7A.5.5 0 012 8.5zm0 3A.5.5 0 012.5 11h4a.5.5 0 010 1h-4a.5.5 0 01-.5-.5z"/></svg>`; }
+function iconSub(){ return `<svg class="ni" viewBox="0 0 16 16" fill="currentColor"><path d="M4.5 2A.5.5 0 015 2.5v11a.5.5 0 01-1 0v-11A.5.5 0 014.5 2zM8 4.5A.5.5 0 018.5 4h5a.5.5 0 010 1h-5A.5.5 0 018 4.5zm0 3A.5.5 0 018.5 7h5a.5.5 0 010 1h-5A.5.5 0 018 7.5zm0 3a.5.5 0 01.5-.5h3a.5.5 0 010 1h-3a.5.5 0 01-.5-.5z"/></svg>`; }
+
+// ═══════════════════════════════════════════════════════════════
+// SCROLL TRACKING
+// ═══════════════════════════════════════════════════════════════
+let _scrollHandler = null;
+
+function initScrollTracking(navItems){
+  const scfill = document.getElementById('scfill');
+  const pFill  = document.getElementById('prog-fill');
+  const pPct   = document.getElementById('prog-pct');
+  const bcCur  = document.getElementById('bc-cur');
+
+  // Build a flat ordered list of all scroll targets for active detection
+  const allTargets = [];
+  navItems.forEach(item => {
+    allTargets.push({ id: item.id, label: item.label });
+    item.subs.forEach(sub => allTargets.push({ id: sub.id, label: sub.label }));
+  });
+
+  if(_scrollHandler) window.removeEventListener('scroll', _scrollHandler);
+
+  _scrollHandler = function(){
+    const scrollY    = window.scrollY;
+    const maxScroll  = document.body.scrollHeight - window.innerHeight;
+    const pct        = maxScroll > 0 ? Math.min(100, Math.round(scrollY / maxScroll * 100)) : 0;
+
+    scfill.style.width = pct + '%';
+    pFill.style.width  = pct + '%';
+    pPct.textContent   = pct + '%';
+
+    // Find the deepest target that is above the fold
+    let activeId    = null;
+    let activeLabel = '';
+    allTargets.forEach(t => {
+      const el = document.getElementById(t.id);
+      if(el && el.getBoundingClientRect().top <= 90){
+        activeId    = t.id;
+        activeLabel = t.label;
+      }
+    });
+
+    // Update nav item highlights
+    document.querySelectorAll('#sb-nav .nl').forEach(btn => {
+      const sid = btn.getAttribute('data-sid');
+      btn.classList.toggle('active', !!sid && sid === activeId);
+    });
+
+    // Top link active when near top
+    if(scrollY < 120){
+      const topBtn = document.querySelector('#sb-nav .nl:not([data-sid])');
+      if(topBtn) topBtn.classList.add('active');
+    }
+
+    // Breadcrumb
+    bcCur.textContent = activeLabel || document.getElementById('sb-doc-title').textContent || '—';
+  };
+
+  window.addEventListener('scroll', _scrollHandler, { passive: true });
+  _scrollHandler();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════════════════════
+function slugify(str){
+  return String(str).trim().toLowerCase()
+    .replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').replace(/^-+|-+$/g,'').slice(0,48) || 'sec';
+}
+function escHTML(str){
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
