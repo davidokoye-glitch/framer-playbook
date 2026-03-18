@@ -113,7 +113,7 @@
       flex-direction: column;
       overflow-y: auto;
       z-index: 100;
-      transition: left .25s ease, transform .25s ease;
+      transition: left 0.25s ease-in-out;
     }
 
     .sidebar::-webkit-scrollbar {
@@ -4497,17 +4497,23 @@
     function toggleSidebar() {
       const sb = document.getElementById('sidebar');
       const mb = document.getElementById('menuBtn');
-      const isHidden = sb.classList.contains('hidden');
-      if (isHidden) {
+      const main = document.querySelector('.main');
+      const scbar = document.querySelector('.scbar');
+      
+      if (sb.classList.contains('hidden')) {
+        // Show sidebar
         sb.classList.remove('hidden');
+        sb.style.left = '0px';
         mb.style.display = 'none';
-        document.querySelector('.main').style.marginLeft = 'var(--sw)';
-        document.querySelector('.scbar').style.left = 'var(--sw)';
+        main.style.marginLeft = '280px';
+        scbar.style.left = '280px';
       } else {
+        // Hide sidebar
         sb.classList.add('hidden');
+        sb.style.left = '-280px';
         mb.style.display = 'flex';
-        document.querySelector('.main').style.marginLeft = '0';
-        document.querySelector('.scbar').style.left = '0';
+        main.style.marginLeft = '0';
+        scbar.style.left = '0';
       }
     }
     function toggleTheme() {
