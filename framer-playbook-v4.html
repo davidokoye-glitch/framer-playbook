@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Framer Template Business Playbook — v4 Final Edition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#fafaf9;--bg2:#f5f4f2;--bg3:#eeecea;
+  --sf:#fff;--sfh:#f7f6f4;
+  --b1:#e5e3df;--b2:#d6d3ce;
+  --t1:#1c1b19;--t2:#5c5954;--t3:#9b9895;
+  --ac:#2563eb;--acb:#eff6ff;--acbr:#bfdbfe;
+  --gn:#16a34a;--gnb:#f0fdf4;--gnbr:#bbf7d0;
+  --am:#b45309;--amb:#fffbeb;--ambr:#fde68a;
+  --pu:#6d28d9;--pub:#f5f3ff;--pubr:#ddd6fe;
+  --rd:#dc2626;--rdb:#fef2f2;--rdbr:#fecaca;
+  --sw:280px;
+  --r:8px;--rl:12px;--rx:16px;
+  --s1:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.05);
+  --s2:0 4px 12px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.05);
+  --s3:0 10px 30px rgba(0,0,0,.1),0 4px 8px rgba(0,0,0,.06);
+}
+[data-theme="dark"] {
+  --bg:#111110;--bg2:#191917;--bg3:#222220;
+  --sf:#1d1d1b;--sfh:#262624;
+  --b1:#2c2c29;--b2:#3a3a37;
+  --t1:#f0efec;--t2:#a8a5a0;--t3:#6b6966;
+  --ac:#3b82f6;--acb:#0f1f3d;--acbr:#1e3a5f;
+  --gn:#22c55e;--gnb:#052e16;--gnbr:#14532d;
+  --am:#f59e0b;--amb:#1c1400;--ambr:#78350f;
+  --pu:#a78bfa;--pub:#1e0f40;--pubr:#3b1f6e;
+  --rd:#f87171;--rdb:#2d0a0a;--rdbr:#7f1d1d;
+  --s1:0 1px 3px rgba(0,0,0,.4);
+  --s2:0 4px 12px rgba(0,0,0,.5);
+  --s3:0 10px 30px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--t1);-webkit-font-smoothing:antialiased;line-height:1.6;transition:background .25s,color .25s;}
+
+/* ── LAYOUT ── */
+.app{display:flex;min-height:100vh;}
+
+/* ── SIDEBAR ── */
+.sidebar{width:var(--sw);background:var(--bg2);border-right:1px solid var(--b1);position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;overflow-y:auto;z-index:100;transition:transform .25s;}
+.sidebar::-webkit-scrollbar{width:0;}
+.sb-top{padding:18px 16px 14px;border-bottom:1px solid var(--b1);flex-shrink:0;}
+.brand{display:flex;align-items:center;gap:9px;margin-bottom:10px;}
+.b-icon{width:30px;height:30px;border-radius:8px;background:var(--t1);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.b-icon svg{width:15px;height:15px;fill:var(--bg);}
+.b-name{font-size:13px;font-weight:700;color:var(--t1);letter-spacing:-.01em;}
+.b-sub{font-size:11px;color:var(--t3);margin-top:1px;}
+.e-badge{display:inline-flex;align-items:center;font-size:10.5px;font-weight:700;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;padding:3px 9px;border-radius:20px;letter-spacing:.03em;}
+.sb-nav{flex:1;padding:8px;}
+.ng{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--t3);padding:10px 8px 5px;}
+.nl{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;font-size:12.5px;font-weight:450;color:var(--t2);text-decoration:none;cursor:pointer;transition:background .12s,color .12s;position:relative;user-select:none;}
+.nl:hover{background:var(--sfh);color:var(--t1);}
+.nl.active{background:var(--bg3);color:var(--t1);font-weight:550;}
+.nl.active::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:2.5px;border-radius:2px;background:var(--ac);}
+.ni{width:14px;height:14px;opacity:.55;flex-shrink:0;}
+.nl.active .ni{opacity:1;color:var(--ac);}
+.nb{margin-left:auto;font-size:10px;font-weight:700;background:var(--acb);color:var(--ac);border:1px solid var(--acbr);padding:1px 5px;border-radius:4px;white-space:nowrap;}
+.nb.new{background:var(--gnb);color:var(--gn);border-color:var(--gnbr);}
+.nb.warn{background:var(--amb);color:var(--am);border-color:var(--ambr);}
+.sb-bot{padding:10px 8px;border-top:1px solid var(--b1);flex-shrink:0;}
+.tbtn-th{display:flex;align-items:center;gap:7px;width:100%;padding:7px 10px;border-radius:7px;background:var(--sf);border:1px solid var(--b1);color:var(--t2);font-family:inherit;font-size:12.5px;font-weight:500;cursor:pointer;transition:background .12s;}
+.tbtn-th:hover{background:var(--sfh);color:var(--t1);}
+.prog-row{display:flex;align-items:center;gap:8px;margin-top:8px;}
+.prog-track{flex:1;height:4px;background:var(--b1);border-radius:2px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--ac),#7c3aed);width:0%;transition:width .15s;border-radius:2px;}
+.prog-pct{font-size:11px;font-weight:600;color:var(--t3);min-width:28px;text-align:right;}
+
+/* ── MAIN ── */
+.main{margin-left:var(--sw);flex:1;min-width:0;}
+
+/* ── TOPBAR ── */
+.topbar{position:sticky;top:0;z-index:50;height:50px;padding:0 44px;display:flex;align-items:center;justify-content:space-between;background:var(--bg);border-bottom:1px solid var(--b1);backdrop-filter:blur(10px);}
+.bc{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--t3);}
+.bc strong{color:var(--t1);font-weight:500;}
+.tbr{display:flex;align-items:center;gap:6px;}
+.btn{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:6px;font-size:12px;font-weight:500;font-family:inherit;cursor:pointer;border:1px solid var(--b1);background:var(--sf);color:var(--t2);transition:background .12s,color .12s;}
+.btn:hover{background:var(--sfh);color:var(--t1);}
+.btn.solid{background:var(--t1);color:var(--bg);border-color:transparent;}
+.btn.solid:hover{opacity:.85;}
+
+/* ── SCROLL BAR ── */
+.scbar{position:fixed;top:0;left:var(--sw);right:0;height:2px;z-index:200;pointer-events:none;}
+.scfill{height:100%;background:linear-gradient(90deg,var(--ac),#7c3aed);width:0%;transition:width .08s;}
+
+/* ── CONTENT ── */
+.content{padding:52px 52px 100px;max-width:940px;}
+
+/* ── HERO ── */
+.hero{margin-bottom:56px;}
+.h-eye{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ac);background:var(--acb);border:1px solid var(--acbr);padding:4px 11px;border-radius:20px;margin-bottom:18px;}
+.hero h1{font-size:36px;font-weight:800;letter-spacing:-.03em;line-height:1.15;color:var(--t1);margin-bottom:6px;}
+.hero h1 em{font-style:normal;color:var(--ac);}
+.h-sub{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--t3);margin-bottom:14px;}
+.hero p{font-size:16px;color:var(--t2);max-width:600px;line-height:1.7;margin-bottom:24px;}
+.pills{display:flex;flex-wrap:wrap;gap:8px;}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;background:var(--sf);border:1px solid var(--b1);color:var(--t2);padding:4px 10px;border-radius:20px;}
+.dot{width:6px;height:6px;border-radius:50%;}
+
+/* ── SECTION ── */
+.section{margin-bottom:60px;scroll-margin-top:70px;}
+.sh{display:flex;align-items:flex-start;gap:14px;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--b1);}
+.sn{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--t1);background:var(--bg3);border:1px solid var(--b1);padding:3px 9px;border-radius:5px;white-space:nowrap;margin-top:5px;}
+.st h2{font-size:23px;font-weight:750;letter-spacing:-.022em;color:var(--t1);line-height:1.25;}
+.st p{font-size:13.5px;color:var(--t3);margin-top:4px;}
+
+/* ── PROSE ── */
+.prose{font-size:14.5px;color:var(--t2);line-height:1.72;margin-bottom:18px;}
+.prose strong{color:var(--t1);font-weight:600;}
+.prose em{font-style:italic;}
+
+/* ── CALLOUT ── */
+.co{border:1px solid;border-radius:var(--r);padding:14px 16px;margin-bottom:16px;display:flex;gap:11px;align-items:flex-start;}
+.co-i{font-size:16px;flex-shrink:0;line-height:1.4;}
+.co-c{flex:1;}
+.co-t{font-size:13px;font-weight:600;margin-bottom:3px;}
+.co-b{font-size:13.5px;line-height:1.65;color:var(--t2);}
+.co-b strong{color:var(--t1);font-weight:600;}
+.co.blue{background:var(--acb);border-color:var(--acbr);}
+.co.blue .co-t{color:var(--ac);}
+.co.green{background:var(--gnb);border-color:var(--gnbr);}
+.co.green .co-t{color:var(--gn);}
+.co.amber{background:var(--amb);border-color:var(--ambr);}
+.co.amber .co-t{color:var(--am);}
+.co.purple{background:var(--pub);border-color:var(--pubr);}
+.co.purple .co-t{color:var(--pu);}
+.co.red{background:var(--rdb);border-color:var(--rdbr);}
+.co.red .co-t{color:var(--rd);}
+
+/* ── CARDS ── */
+.cards{display:grid;gap:10px;margin-bottom:18px;}
+.c2{grid-template-columns:1fr 1fr;}
+.c3{grid-template-columns:1fr 1fr 1fr;}
+.c4{grid-template-columns:1fr 1fr;}
+.card{background:var(--sf);border:1px solid var(--b1);border-radius:var(--rl);padding:18px 20px;transition:box-shadow .2s,transform .15s,border-color .15s;}
+.card:hover{box-shadow:var(--s2);transform:translateY(-1px);border-color:var(--b2);}
+.ci{font-size:22px;margin-bottom:10px;}
+.ct{font-size:14px;font-weight:600;color:var(--t1);margin-bottom:5px;}
+.cb{font-size:13px;color:var(--t2);line-height:1.6;}
+.cb strong{color:var(--t1);font-weight:600;}
+.card.ac{border-color:var(--acbr);background:linear-gradient(135deg,var(--acb),var(--sf));}
+.card.rd{border-color:var(--rdbr);background:linear-gradient(135deg,var(--rdb),var(--sf));}
+.card.gn{border-color:var(--gnbr);background:linear-gradient(135deg,var(--gnb),var(--sf));}
+
+/* ── CHECKLIST ── */
+.chklist{display:flex;flex-direction:column;gap:2px;margin-bottom:18px;}
+.chk{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border-radius:7px;cursor:pointer;border:1px solid transparent;transition:background .12s;}
+.chk:hover{background:var(--sfh);}
+.chk.done{opacity:.5;}
+.chkb{width:17px;height:17px;flex-shrink:0;margin-top:2px;border:1.5px solid var(--b2);border-radius:5px;background:var(--sf);display:flex;align-items:center;justify-content:center;transition:background .15s,border-color .15s;}
+.chk.done .chkb{background:var(--gn);border-color:var(--gn);}
+.chkb svg{display:none;}
+.chk.done .chkb svg{display:block;}
+.chkl{font-size:13.5px;color:var(--t1);line-height:1.5;}
+.chk.done .chkl{text-decoration:line-through;color:var(--t3);}
+.chks{font-size:12px;color:var(--t3);margin-top:1px;}
+
+/* ── STEPS ── */
+.steps{display:flex;flex-direction:column;gap:12px;margin-bottom:18px;}
+.step{display:flex;gap:14px;align-items:flex-start;}
+.step-n{width:26px;height:26px;flex-shrink:0;margin-top:1px;background:var(--bg2);border:1px solid var(--b1);border-radius:7px;font-size:11px;font-weight:700;color:var(--t2);display:flex;align-items:center;justify-content:center;}
+.step-n.a{background:var(--acb);border-color:var(--acbr);color:var(--ac);}
+.step-body{flex:1;}
+.step-t{font-size:14px;font-weight:600;color:var(--t1);}
+.step-d{font-size:13px;color:var(--t2);margin-top:2px;line-height:1.6;}
+.step-d strong{color:var(--t1);}
+
+/* ── ACCORDION ── */
+.accs{display:flex;flex-direction:column;gap:3px;margin-bottom:18px;}
+.acc{border:1px solid var(--b1);border-radius:var(--r);background:var(--sf);overflow:hidden;}
+.acc-h{display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;user-select:none;font-size:13.5px;font-weight:500;color:var(--t1);transition:background .12s;}
+.acc-h:hover{background:var(--sfh);}
+.acc-ico{font-size:16px;flex-shrink:0;}
+.acc-arr{margin-left:auto;flex-shrink:0;color:var(--t3);transition:transform .2s;}
+.acc.open .acc-arr{transform:rotate(90deg);}
+.acc-body{display:none;padding:12px 16px 14px 44px;border-top:1px solid var(--b1);}
+.acc.open .acc-body{display:block;}
+
+/* ── TABLE ── */
+.tw{overflow-x:auto;margin-bottom:18px;border-radius:var(--rl);border:1px solid var(--b1);}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead{background:var(--bg2);}
+th{padding:10px 14px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);white-space:nowrap;border-bottom:1px solid var(--b1);}
+td{padding:10px 14px;color:var(--t2);border-bottom:1px solid var(--b1);vertical-align:top;line-height:1.55;}
+td:first-child{color:var(--t1);font-weight:500;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:var(--sfh);}
+td strong{color:var(--t1);font-weight:600;}
+.badge{display:inline-flex;align-items:center;font-size:10.5px;font-weight:700;padding:2px 6px;border-radius:4px;border:1px solid;}
+.badge.new{background:var(--gnb);color:var(--gn);border-color:var(--gnbr);}
+
+/* ── PRICING ── */
+.pricing{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px;}
+.pc{background:var(--sf);border:1.5px solid var(--b1);border-radius:var(--rl);padding:20px;position:relative;transition:box-shadow .2s;}
+.pc:hover{box-shadow:var(--s2);}
+.pc.feat{border-color:var(--ac);background:linear-gradient(160deg,var(--acb),var(--sf));}
+.pc-star{position:absolute;top:-1px;right:16px;background:var(--ac);color:#fff;font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:3px 8px;border-radius:0 0 6px 6px;}
+.pc-tier{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);margin-bottom:5px;}
+.pc-amt{font-size:34px;font-weight:800;letter-spacing:-.04em;color:var(--t1);line-height:1;}
+.pc-amt sup{font-size:16px;vertical-align:top;margin-top:6px;font-weight:600;display:inline-block;}
+.pc-from{font-size:11px;color:var(--t3);margin-top:4px;margin-bottom:14px;}
+.pc-feats{list-style:none;display:flex;flex-direction:column;gap:6px;}
+.pc-feats li{font-size:12.5px;color:var(--t2);display:flex;gap:7px;align-items:flex-start;}
+.pfc{color:var(--gn);flex-shrink:0;margin-top:2px;font-size:12px;}
+
+/* ── RANK ── */
+.ranklist{display:flex;flex-direction:column;gap:3px;margin-bottom:18px;}
+.rr{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:var(--r);background:var(--sf);border:1px solid var(--b1);font-size:13px;transition:background .12s;}
+.rr:hover{background:var(--sfh);}
+.rn{width:22px;height:22px;border-radius:6px;flex-shrink:0;background:var(--bg2);border:1px solid var(--b1);font-size:11px;font-weight:700;color:var(--t3);display:flex;align-items:center;justify-content:center;}
+.rn.g{background:#fef3c7;border-color:#fde68a;color:#b45309;}
+.rc{flex:1;font-weight:500;color:var(--t1);}
+.rm{font-size:12px;color:var(--t3);}
+.rb-wrap{width:64px;height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;}
+.rb{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--ac),#7c3aed);}
+
+/* ── TIMELINE ── */
+.tl{position:relative;padding-left:20px;margin-bottom:18px;}
+.tl::before{content:'';position:absolute;left:6px;top:10px;bottom:10px;width:1.5px;background:var(--b1);}
+.tl-item{position:relative;margin-bottom:22px;}
+.tl-dot{position:absolute;left:-17px;top:7px;width:10px;height:10px;border-radius:50%;border:2px solid var(--bg);background:var(--b2);}
+.tl-item.done .tl-dot{background:var(--gn);}
+.tl-item.active .tl-dot{background:var(--ac);box-shadow:0 0 0 3px var(--acb);}
+.tl-item.launch .tl-dot{background:var(--am);box-shadow:0 0 0 3px var(--amb);}
+.tl-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);margin-bottom:3px;}
+.tl-title{font-size:14px;font-weight:600;color:var(--t1);}
+.tl-desc{font-size:13px;color:var(--t2);margin-top:3px;line-height:1.55;}
+.tl-dual{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;}
+.tl-col{background:var(--bg2);border:1px solid var(--b1);border-radius:6px;padding:8px 10px;}
+.tl-col-h{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t3);margin-bottom:4px;}
+.tl-col-b{font-size:12px;color:var(--t2);line-height:1.5;}
+
+/* ── PRINCIPLES ── */
+.principles{display:flex;flex-direction:column;gap:3px;margin-bottom:18px;}
+.pr{background:var(--sf);border:1px solid var(--b1);border-radius:var(--r);padding:14px 16px;display:flex;gap:14px;align-items:flex-start;transition:box-shadow .15s,border-color .15s;}
+.pr:hover{box-shadow:var(--s1);border-color:var(--b2);}
+.pr-n{font-size:11.5px;font-weight:800;color:var(--t3);min-width:26px;margin-top:2px;}
+.pr-t{font-size:14px;font-weight:700;color:var(--t1);margin-bottom:3px;}
+.pr-b{font-size:13px;color:var(--t2);line-height:1.6;}
+
+/* ── TWEET BOX ── */
+.tbox{background:var(--sf);border:1px solid var(--b1);border-radius:var(--rl);padding:16px 18px;margin-bottom:14px;}
+.tbox-lbl{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);margin-bottom:10px;display:flex;align-items:center;gap:7px;}
+.tbox-lbl::after{content:'';flex:1;height:1px;background:var(--b1);}
+.tbox-body{font-size:14px;line-height:1.65;color:var(--t1);}
+.tbox-foot{margin-top:10px;font-size:12px;color:var(--t3);display:flex;gap:14px;flex-wrap:wrap;}
+
+/* ── FUNNEL TABLE ── */
+.funneltbl{display:flex;flex-direction:column;gap:3px;margin-bottom:18px;}
+.fr{background:var(--sf);border:1px solid var(--b1);border-radius:var(--r);padding:11px 14px;display:flex;gap:14px;align-items:center;font-size:13px;flex-wrap:wrap;transition:background .12s;}
+.fr:hover{background:var(--sfh);}
+.fr-m{font-weight:600;color:var(--t1);min-width:200px;}
+.fr-t{font-size:13px;font-weight:700;color:var(--ac);background:var(--acb);border:1px solid var(--acbr);padding:2px 8px;border-radius:5px;white-space:nowrap;}
+.fr-a{font-size:12.5px;color:var(--t2);flex:1;}
+
+/* ── EMAIL SEQ ── */
+.eseq{display:flex;flex-direction:column;gap:3px;margin-bottom:18px;}
+.ei{background:var(--sf);border:1px solid var(--b1);border-radius:var(--r);padding:12px 14px;display:flex;gap:12px;align-items:flex-start;}
+.ed{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ac);background:var(--acb);border:1px solid var(--acbr);padding:2px 7px;border-radius:4px;white-space:nowrap;margin-top:1px;}
+.et{font-weight:600;color:var(--t1);margin-bottom:2px;font-size:13.5px;}
+.eb{color:var(--t2);font-size:12.5px;line-height:1.55;}
+
+/* ── SCORE TABLE ── */
+.score-tbl{display:grid;grid-template-columns:1fr;gap:4px;margin-bottom:18px;}
+.score-row{display:flex;align-items:center;gap:10px;background:var(--sf);border:1px solid var(--b1);border-radius:var(--r);padding:10px 14px;font-size:13px;}
+.score-dim{font-weight:600;color:var(--t1);min-width:180px;}
+.score-cells{display:flex;gap:4px;flex:1;}
+.score-cell{flex:1;padding:4px 6px;border-radius:5px;font-size:11px;font-weight:500;text-align:center;border:1px solid var(--b1);color:var(--t2);background:var(--bg2);}
+.score-cell.bad{background:var(--rdb);border-color:var(--rdbr);color:var(--rd);}
+.score-cell.mid{background:var(--amb);border-color:var(--ambr);color:var(--am);}
+.score-cell.good{background:var(--gnb);border-color:var(--gnbr);color:var(--gn);}
+
+/* ── FAILURE MODE ── */
+.fm-grid{display:flex;flex-direction:column;gap:3px;margin-bottom:18px;}
+.fm{background:var(--sf);border:1px solid var(--b1);border-radius:var(--r);padding:12px 14px;display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:10px;font-size:13px;}
+.fm:hover{background:var(--sfh);}
+.fm-cause{font-weight:600;color:var(--t1);}
+.fm-signal{color:var(--t2);}
+.fm-fix{color:var(--gn);font-weight:500;}
+.fm-head{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:10px;padding:6px 14px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);}
+
+/* ── EVOLUTION PATHS ── */
+.paths{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
+.path{background:var(--sf);border:1px solid var(--b1);border-radius:var(--rl);padding:18px 20px;}
+.path-n{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);margin-bottom:6px;}
+.path-t{font-size:15px;font-weight:700;color:var(--t1);margin-bottom:6px;}
+.path-b{font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:10px;}
+.path-for{font-size:11.5px;font-style:italic;color:var(--t3);border-top:1px solid var(--b1);padding-top:8px;margin-top:4px;}
+
+/* ── FINAL BOX ── */
+.final{background:var(--t1);border-radius:var(--rx);padding:36px 40px;margin-top:60px;position:relative;overflow:hidden;}
+.final::before{content:'v4';position:absolute;right:-10px;top:-20px;font-size:150px;font-weight:900;opacity:.04;color:#fff;line-height:1;pointer-events:none;}
+.final-eye{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.4);margin-bottom:12px;}
+.final-t{font-size:22px;font-weight:800;color:#fff;margin-bottom:14px;letter-spacing:-.02em;}
+.final-b{font-size:15px;color:rgba(255,255,255,.72);line-height:1.72;}
+.final-b strong{color:rgba(255,255,255,.92);font-weight:600;}
+
+hr{border:none;border-top:1px solid var(--b1);margin:28px 0;}
+
+/* ── MOBILE ── */
+.mob-btn{display:none;position:fixed;bottom:20px;right:20px;z-index:300;width:44px;height:44px;border-radius:50%;background:var(--t1);color:var(--bg);border:none;cursor:pointer;font-size:18px;align-items:center;justify-content:center;box-shadow:var(--s3);}
+@media(max-width:860px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;}
+  .scbar{left:0;}
+  .content{padding:32px 24px 80px;}
+  .pricing,.c3,.c2,.c4,.paths,.tl-dual{grid-template-columns:1fr;}
+  .hero h1{font-size:28px;}
+  .topbar{padding:0 20px;}
+  .mob-btn{display:flex;}
+  .fm{grid-template-columns:1fr;}
+  .fm-head{display:none;}
+  .score-cells{flex-direction:column;}
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.section{animation:fadeUp .3s ease both;}
+</style>
+</head>
+<body>
+<div class="scbar"><div class="scfill" id="sf"></div></div>
+<div class="app">
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-top">
+    <div class="brand">
+      <div class="b-icon"><svg viewBox="0 0 15 15"><path d="M2 2h4v4H2zm7 0h4v4H9zM2 9h4v4H2zm7 0h4v4H9z"/></svg></div>
+      <div><div class="b-name">Template Playbook</div><div class="b-sub">Framer Business System</div></div>
+    </div>
+    <div class="e-badge">★ v4 Final Edition — Stress-Tested</div>
+  </div>
+  <nav class="sb-nav">
+    <div class="ng">⚠ Read First</div>
+    <a class="nl" href="#s11" onclick="setNav(this,'Skill Gap Disclosure')">
+      <svg class="ni" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 6.5a.75.75 0 01.75.75v3a.75.75 0 01-1.5 0v-3A.75.75 0 018 7.5zm0-3a1 1 0 110 2 1 1 0 010-2z"/></svg>
+      Skill Gap Disclosure<span class="nb warn">Start</span>
+    </a>
+    <div class="ng">Foundation</div>
+    <a class="nl active" href="#s0" onclick="setNav(this,'Strategic Overview')">
+      <svg class="ni" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 1.5a5.5 5.5 0 110 11 5.5 5.5 0 010-11zm0 2a.75.75 0 00-.75.75v3.19l-1.72 1.72a.75.75 0 101.06 1.06l2-2A.75.75 0 009.25 8.5V5.25A.75.75 0 008 4.5z"/></svg>
+      Strategic Overview
+    </a>
+    <a class="nl" href="#s1" onclick="setNav(this,'Finding Your Idea')">
+      <svg class="ni" viewBox="0 0 16 16" fill="currentColor"><path d="M6.5 1a5.5 5.5 0 014.383 8.823l3.896 3.897a.75.75 0 01-1.06 1.06l-3.897-3.896A5.5 5.5 0 116.5 1zm0 1.5a4 4 0 100 8 4 4 0 000-8z"/></svg>
+      Finding Your Idea
+    </a>
+    <a class="nl" href="#s2" onclick="setNav(this,'Design & Build')">
+      <svg class="ni" viewBox="0 0 16 16" fill="currentColor"><path d="M14.707 1.293a1 1 0 00-1.414 0L4 10.586V13h2.414l9.293-9.293a1 1 0 000-1.414l-1-1z"/></svg>
+      Design &amp; Build
+    </a>
+    <a class="nl" href="#s3" onclick="setNav(this,'Template OS')">
+      <svg class="ni" viewBox="0 0 16 16" fill="currentColor"><path d="M3 2a1 1 0 00-1 1v10a1 1 0 001 1h10a1 1 0 001-1V3a1 1 0 00-1-1H3zm2.5 2.5h5a.5.5 0 010 1h-5a.5.5 0 010-1zm0 3h5a.5.5 0 010 1h-5a.5.5 0 010-1zm0 3h3a.5.5 0 010 1h-3a.5.5 0 010-1z"/></svg>
+      Template OS
+    </a>
+    <div class="ng">Launch</div>
+    <a class="nl" href="#s4" onclick="setNav(this,'Pricing & Positioning')">
+      <svg class="ni" viewBox="0 0 16 16" fill="currentColor"><path d="M3.5 2A1.5 1.5 0 002 3.5v9A1.5 1.5 0 003.5 14h9a1.5 1.5 0 001.5-1.5v-9A1.5 1.5 0 0012.5 2h-9zm1.25 3.5h5.5a.75.75 0 010 1.5h-5.5a.75.75 0 010-1.5zm0 3h3.5a.75.75 0 010 1.5h-3.5a.75.75 0 010-1.5z"/></svg>
+      Pricing &amp; Positioning
+    </a>
+    <a class="nl" href="#s5" onclick="setNav(this,'Distribution')">
+      <svg class="ni" viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A.5.5 0 012.5 2h11a.5.5 0 010 1h-11A.5.5 0 012 2.5zm0 3A.5.5 0 012.5 5h11a.5.5 0 010 1h-11A.5.5 0 012 5.5zm0 3A.5.5 0 012.5 8h7a.5.5 0 010 1h-7A.5.5 0 012 8.5zm0 3A.5.5 0 012.5 11h4a.5.5 0 010 1h-4a.5.5 0 01-.5-.5z"/></svg>
+      Distribution<span class="nb new">+SEO</span>
+    </a>
+    <a class="nl" href="#s6" onclick="setNav(this,'Build in Public')">
+      <svg class="ni" viewBox="0 0 16 16" fill="currentColor"><path d="M0 2.75C0 1.784.784 1 1.75 1h12.5c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0114.25 15H1.75A1.75 1.75 0 010 13.25V2.75zm1.75-.25a.25.25 0 00-.25.25v10.5c0 .138.112.25.25.25h12.5a.25.25 0 00.25-.25V2.75a.25.25 0 00-.25-.25H1.75z"/></svg>
+      Build in Public<span class="nb new">+Writing</span>
+    </a>
+    <div class="ng">Scale</div>
+    <a class="nl" href="#s7" onclick="setNav(this,'Conversion Optimization')">
+      <svg class="ni" viewBox="0 0 16 16" fill="currentColor"><path d="M1 10.25a.75.75 0 01.75-.75h1.5a.75.75 0 010 1.5H1.75a.75.75 0 01-.75-.75zm3 0a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM1 6.75a.75.75 0 01.75-.75h4.5a.75.75 0 010 1.5H1.75a.75.75 0 01-.75-.75zm3 0a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5A.75.75 0 014 6.75z"/></svg>
+      Conversion Optimization
+    </a>
+    <a class="nl" href="#s8" onclick="setNav(this,'Scaling Revenue')">
+      <svg class="ni" viewBox="0 0 16 16" fill="currentColor"><path d="M1.5 8.25a.75.75 0 01.75-.75h.5a.75.75 0 01.75.75v5a.75.75 0 01-.75.75h-.5a.75.75 0 01-.75-.75v-5zm4-4a.75.75 0 01.75-.75h.5a.75.75 0 01.75.75v9a.75.75 0 01-.75.75h-.5a.75.75 0 01-.75-.75v-9zm4 2a.75.75 0 01.75-.75h.5a.75.75 0 01.75.75v7a.75.75 0 01-.75.75h-.5a.75.75 0 01-.75-.75v-7zm4-4a.75.75 0 01.75-.75h.5a.75.75 0 01.75.75v11a.75.75 0 01-.75.75h-.5a.75.75 0 01-.75-.75v-11z"/></svg>
+      Scaling Revenue<span class="nb new">Dual-track</span>
+    </a>
+    <a class="nl" href="#s9" onclick="setNav(this,'Master Timeline')">
+      <svg class="ni" viewBox="0 0 16 16" fill="currentColor"><path d="M1 2.75C1 1.784 1.784 1 2.75 1h10.5c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0113.25 15H2.75A1.75 1.75 0 011 13.25V2.75zm1.75-.25a.25.25 0 00-.25.25v10.5c0 .138.112.25.25.25h10.5a.25.25 0 00.25-.25V2.75a.25.25 0 00-.25-.25H2.75z"/></svg>
+      Master Timeline<span class="nb new">Realistic</span>
+    </a>
+    <a class="nl" href="#s10" onclick="setNav(this,'10 Principles')">
+      <svg class="ni" viewBox="0 0 16 16" fill="currentColor"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg>
+      10 Principles
+    </a>
+    <div class="ng">Advanced</div>
+    <a class="nl" href="#s12" onclick="setNav(this,'Anti-Saturation Framework')">
+      <svg class="ni" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zM0 8a8 8 0 1116 0A8 8 0 010 8zm9 3a1 1 0 11-2 0 1 1 0 012 0zm-.25-6.25a.75.75 0 00-1.5 0v3.5a.75.75 0 001.5 0v-3.5z"/></svg>
+      Anti-Saturation<span class="nb new">New</span>
+    </a>
+    <a class="nl" href="#s13" onclick="setNav(this,'Competitive Intelligence')">
+      <svg class="ni" viewBox="0 0 16 16" fill="currentColor"><path d="M6.5 1a5.5 5.5 0 014.383 8.823l3.896 3.897a.75.75 0 01-1.06 1.06l-3.897-3.896A5.5 5.5 0 116.5 1z"/></svg>
+      Competitive Intel<span class="nb new">New</span>
+    </a>
+    <a class="nl" href="#s14" onclick="setNav(this,'Failure Modes')">
+      <svg class="ni" viewBox="0 0 16 16" fill="currentColor"><path d="M2.343 13.657A8 8 0 1113.657 2.343 8 8 0 012.343 13.657zM6.03 4.97a.75.75 0 00-1.06 1.06L6.94 8 4.97 9.97a.75.75 0 101.06 1.06L8 9.06l1.97 1.97a.75.75 0 101.06-1.06L9.06 8l1.97-1.97a.75.75 0 10-1.06-1.06L8 6.94 6.03 4.97z"/></svg>
+      Failure Mode Fixes<span class="nb new">New</span>
+    </a>
+    <a class="nl" href="#s15" onclick="setNav(this,'Moat Expansion')">
+      <svg class="ni" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0a8 8 0 110 16A8 8 0 018 0zM1.5 8a6.5 6.5 0 1013 0 6.5 6.5 0 00-13 0z"/></svg>
+      Moat Expansion<span class="nb new">New</span>
+    </a>
+    <a class="nl" href="#s16" onclick="setNav(this,'Judgment Layer')">
+      <svg class="ni" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.5A6.5 6.5 0 1114.5 8 6.508 6.508 0 018 1.5zM0 8a8 8 0 1116 0A8 8 0 010 8z"/></svg>
+      Judgment Layer<span class="nb new">New</span>
+    </a>
+    <a class="nl" href="#s17" onclick="setNav(this,'Speed vs Quality')">
+      <svg class="ni" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0a8 8 0 110 16A8 8 0 018 0zm.5 4.75a.75.75 0 00-1.5 0v3.5a.75.75 0 001.5 0v-3.5zm0 6a.75.75 0 00-1.5 0v.5a.75.75 0 001.5 0v-.5z"/></svg>
+      Speed vs Quality<span class="nb new">New</span>
+    </a>
+    <a class="nl" href="#s18" onclick="setNav(this,'Default Choice')">
+      <svg class="ni" viewBox="0 0 16 16" fill="currentColor"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg>
+      Become Default Choice<span class="nb new">New</span>
+    </a>
+    <a class="nl" href="#s19" onclick="setNav(this,'Ceiling Awareness')">
+      <svg class="ni" viewBox="0 0 16 16" fill="currentColor"><path d="M1.5 8.25a.75.75 0 01.75-.75h1.5a.75.75 0 010 1.5H2.25a.75.75 0 01-.75-.75zm12.25-.75a.75.75 0 010 1.5h-1.5a.75.75 0 010-1.5h1.5zM8 12.5a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 12.5zm0-11a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 1.5z"/></svg>
+      Ceiling Awareness<span class="nb new">New</span>
+    </a>
+  </nav>
+  <div class="sb-bot">
+    <button class="tbtn-th" onclick="toggleTheme()"><span id="ticon">🌙</span><span id="tlbl">Dark mode</span></button>
+    <div class="prog-row">
+      <div class="prog-track"><div class="prog-fill" id="pf"></div></div>
+      <div class="prog-pct" id="pp">0%</div>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══ MAIN ═══ -->
+<main class="main">
+  <div class="topbar">
+    <div class="bc">Framer Business <span style="opacity:.4">›</span> <strong id="cur">Strategic Overview</strong></div>
+    <div class="tbr">
+      <button class="btn" onclick="expandAll()">Expand all</button>
+      <button class="btn solid" onclick="markDone()">✓ Check all</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="h-eye">★ v4 Final Edition · Iteratively stress-tested across 4 rounds</div>
+      <div class="h-sub">The Complete End-to-End System</div>
+      <h1>The Definitive Framer Template<br><em>Business Playbook</em></h1>
+      <p>$5K–$10K/month revenue-generating Framer template business — rebuilt across four rounds of critical review with Template OS architecture, SEO distribution, failure mode playbooks, judgment layer, and honest dual-scenario revenue projections.</p>
+      <div class="pills">
+        <div class="pill"><div class="dot" style="background:var(--ac)"></div>19 Parts</div>
+        <div class="pill"><div class="dot" style="background:var(--gn)"></div>~6–10 month roadmap</div>
+        <div class="pill"><div class="dot" style="background:var(--am)"></div>$5K–$10K/month target</div>
+        <div class="pill"><div class="dot" style="background:var(--pu)"></div>Dual warm/cold-start tracks</div>
+        <div class="pill"><div class="dot" style="background:var(--rd)"></div>Judgment + failure modes</div>
+      </div>
+    </div>
+
+    <!-- PART 11: Skill Gap Disclosure (listed first per TOC) -->
+    <section class="section" id="s11">
+      <div class="sh">
+        <div class="sn">⚠ Start Here</div>
+        <div class="st"><h2>Skill Gap Disclosure — Read Before Part 1</h2><p>The three non-negotiable prerequisites and who this playbook is built for</p></div>
+      </div>
+      <div class="co red">
+        <div class="co-i">🛑</div>
+        <div class="co-c">
+          <div class="co-t">Blunt Truth</div>
+          <div class="co-b">If you follow this playbook with significant gaps in the three skill areas below, you will build something, get poor results, and conclude the strategy was wrong. <strong>The strategy is not wrong. The prerequisite skills were missing.</strong></div>
+        </div>
+      </div>
+      <div class="prose"><strong>The three non-negotiable skills:</strong></div>
+      <div class="accs">
+        <div class="acc open" onclick="toggle(this)">
+          <div class="acc-h"><span class="acc-ico">👁️</span> 1. Visual Taste &amp; Design Fundamentals <svg class="acc-arr" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></div>
+          <div class="acc-body">
+            <div class="prose" style="margin-bottom:8px">You need to be able to look at a layout and know when something is off — spacing, hierarchy, contrast, weight. If you cannot tell the difference between a good and bad landing page within 5 seconds, you have a taste gap.</div>
+            <div class="co blue" style="margin-bottom:0"><div class="co-i">💡</div><div class="co-c"><div class="co-t">How to close it in 2 weeks</div><div class="co-b">Spend 2 weeks on Mobbin.com and Land-book.com. Study 50 real SaaS landing pages. Build the vocabulary before you build the template.</div></div></div>
+          </div>
+        </div>
+        <div class="acc" onclick="toggle(this)">
+          <div class="acc-h"><span class="acc-ico">✍️</span> 2. Copywriting Fundamentals <svg class="acc-arr" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></div>
+          <div class="acc-body">
+            <div class="prose" style="margin-bottom:8px">Your listing, your X posts, your documentation, your email sequence — all of it is copy. If you write features not benefits, vague not specific, passive not active, your conversion rates will be mediocre regardless of design quality.</div>
+            <div class="co blue" style="margin-bottom:0"><div class="co-i">💡</div><div class="co-c"><div class="co-t">How to close it</div><div class="co-b">Read Ogilvy on Advertising once. Read the first 10 posts from the top 3 template sellers on X. Notice what they say and how. Write 10 headlines for your template before you design anything.</div></div></div>
+          </div>
+        </div>
+        <div class="acc" onclick="toggle(this)">
+          <div class="acc-h"><span class="acc-ico">🧠</span> 3. Basic Product Thinking <svg class="acc-arr" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></div>
+          <div class="acc-body">
+            <div class="prose" style="margin-bottom:8px">Can you articulate exactly who your buyer is, what problem they have, and why your solution solves it better? If your answer is "designers, they need a nice template," you have a product thinking gap.</div>
+            <div class="tbox" style="margin-bottom:0">
+              <div class="tbox-lbl">✦ Fill this sentence before opening Framer</div>
+              <div class="tbox-body">"My template is for <em>[specific person]</em> who is trying to <em>[specific outcome]</em> but is currently struggling with <em>[specific obstacle]</em>. My template solves this by <em>[specific mechanism]</em>."</div>
+              <div class="tbox-foot"><span>If you cannot complete this with specifics → you are not ready to build yet.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="prose"><strong>Who should NOT follow this playbook yet:</strong></div>
+      <div class="cards c2">
+        <div class="card rd"><div class="ci">🚫</div><div class="ct">Not Yet</div><div class="cb">Never designed a complete site from scratch · Can't articulate why a competitor's template works or doesn't · Never written content with genuine engagement from strangers · Expect revenue in first 2 weeks without an existing audience</div></div>
+        <div class="card gn"><div class="ci">✅</div><div class="ct">This Is Built For You</div><div class="cb">You've shipped something before · You have a genuine point of view on design · You're willing to post publicly before it's finished · You think in terms of buyer outcomes, not personal preferences</div></div>
+      </div>
+    </section>
+
+    <!-- PART 0 -->
+    <section class="section" id="s0">
+      <div class="sh">
+        <div class="sn">Part 0</div>
+        <div class="st"><h2>Strategic Overview: Why Most Template Businesses Fail</h2><p>The core thesis and what separates $500/month from $10,000/month</p></div>
+      </div>
+      <div class="prose">The template marketplace is not crowded — it is <strong>mis-positioned</strong>. Most creators treat templates as aesthetic products. The ones clearing $5K–$10K/month treat them as <strong>decision-compression tools</strong> for a specific buyer.</div>
+      <div class="co blue">
+        <div class="co-i">💡</div>
+        <div class="co-c">
+          <div class="co-t">The Core Thesis</div>
+          <div class="co-b">Your template is not a pretty website. It is <strong>40 hours of design decisions compressed into a $69 purchase</strong>. Every design choice you make and explain in documentation is one less decision your buyer has to make. Specificity is not a feature — it is your entire competitive advantage.</div>
+        </div>
+      </div>
+      <div class="prose"><strong>The three things that actually drive revenue:</strong></div>
+      <div class="cards c3">
+        <div class="card"><div class="ci">🎯</div><div class="ct">Deep Buyer Understanding</div><div class="cb">Understanding a specific buyer better than anyone else in your category.</div></div>
+        <div class="card"><div class="ci">⏱️</div><div class="ct">Value in Time Saved</div><div class="cb">Communicating value in terms of <strong>time saved and decisions eliminated</strong> — not aesthetic quality.</div></div>
+        <div class="card"><div class="ci">📢</div><div class="ct">Consistent Distribution</div><div class="cb">Showing up consistently across distribution channels with genuine value.</div></div>
+      </div>
+      <div class="co green">
+        <div class="co-i">⬆️</div>
+        <div class="co-c">
+          <div class="co-t">What v4 adds over the original</div>
+          <div class="co-b">Template OS architecture · recognizable visual signature · SEO distribution layer · conversion funnel tracking · post-purchase onboarding · anti-saturation framework · competitive teardown methodology · failure mode playbook · judgment layer · shipping decision framework · micro-niche dominance strategy · ceiling awareness</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PART 1 -->
+    <section class="section" id="s1">
+      <div class="sh">
+        <div class="sn">Part 1</div>
+        <div class="st"><h2>Finding the Right Idea (Before You Design Anything)</h2><p>Start with demand signals, not aesthetics</p></div>
+      </div>
+      <div class="prose">Most template makers start with aesthetics. You should start with demand signals. The goal: find a category where <strong>buyers are already spending money</strong>, incumbents are mediocre, and you can build something meaningfully better in 3–4 weeks.</div>
+      <div class="accs">
+        <div class="acc open" onclick="toggle(this)">
+          <div class="acc-h"><span class="acc-ico">🏪</span>Mine the Framer Marketplace<svg class="acc-arr" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></div>
+          <div class="acc-body"><div class="prose" style="margin-bottom:0">Sort by Best Sellers and study what is consistently at the top — not to copy, but to understand the <strong>job-to-be-done</strong>. Read reviews systematically. What do buyers complain about? Missing sections, no dark mode, hard to customize colors, no blog — these are your product gaps.</div></div>
+        </div>
+        <div class="acc" onclick="toggle(this)">
+          <div class="acc-h"><span class="acc-ico">𝕏</span>Watch X for Buyer Intent<svg class="acc-arr" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></div>
+          <div class="acc-body">
+            <div class="prose" style="margin-bottom:8px">Run these searches and screenshot every result for a week. Free, real-time demand research no tool can replicate.</div>
+            <div class="chklist">
+              <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="chkl">"Framer template [category]"</div></div>
+              <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="chkl">"looking for Framer template"</div></div>
+              <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="chkl">"does anyone know a good Framer"</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="acc" onclick="toggle(this)">
+          <div class="acc-h"><span class="acc-ico">🎯</span>Best Categories Right Now (2025)<svg class="acc-arr" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></div>
+          <div class="acc-body">
+            <div class="chklist">
+              <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">SaaS startups &amp; AI tools</div><div class="chks">Highest urgency, highest willingness to pay</div></div></div>
+              <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">Personal portfolio for developers</div><div class="chks">Specific enough to stand out, evergreen demand</div></div></div>
+              <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">Agency sites</div><div class="chks">Recurring need, team licenses justify premium pricing</div></div></div>
+              <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">Persona-specific: solo consultants, Notion creators, developer tool founders</div><div class="chks">Low competition, buyers immediately self-identify</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="co amber">
+        <div class="co-i">⭐</div>
+        <div class="co-c">
+          <div class="co-t">The Refined Target: Hyper-Specific ICP</div>
+          <div class="co-b">Instead of "AI SaaS template" → target <strong>"Framer template for AI tools with waitlists and early traction."</strong><br><br>Sub-niches: B2B AI developer tools · AI tools with Notion-style aesthetics · AI tools targeting a specific vertical (legal, marketing, finance)</div>
+        </div>
+      </div>
+      <div class="tbox">
+        <div class="tbox-lbl">✦ Validation Post — publish before touching Framer</div>
+        <div class="tbox-body">"Would you buy a Framer template specifically designed for AI SaaS products with early waitlists — pricing section, feature grid, email capture, and dark mode built in? Targeting solo founders who want to ship fast. RT if yes or drop your biggest pain point below ↓"</div>
+        <div class="tbox-foot">
+          <span>✓ <strong>30+ engagements</strong></span>
+          <span>✉ <strong>5+ DMs</strong></span>
+          <span>→ you build it. Less = wrong framing or wrong audience. Either way, saved 3 weeks.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- PART 2 -->
+    <section class="section" id="s2">
+      <div class="sh">
+        <div class="sn">Part 2</div>
+        <div class="st"><h2>Designing &amp; Building the Template</h2><p>The 3–4 week build plan and technical standards that make or break reviews</p></div>
+      </div>
+      <div class="co blue">
+        <div class="co-i">👁️</div>
+        <div class="co-c">
+          <div class="co-t">The 5-Second Test</div>
+          <div class="co-b">A founder looks at your template and immediately thinks "this looks like a real product." No lorem ipsum, no stock photos of handshakes, no 12-section bloat. <strong>Every section exists because it converts</strong> — not because other templates have it.</div>
+        </div>
+      </div>
+      <div class="prose"><strong>Exact sections to include — and why:</strong></div>
+      <div class="tw">
+        <table>
+          <thead><tr><th>#</th><th>Section</th><th>Conversion Purpose</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Hero — "[Product] for [persona] who want [outcome]"</td><td>Immediately signals this is for them. Creates desire in 5 seconds.</td></tr>
+            <tr><td>2</td><td>Social proof bar (logos or short testimonials)</td><td>Reduces risk. Borrowed credibility before they scroll.</td></tr>
+            <tr><td>3</td><td>Feature breakdown (3 columns, not 6)</td><td>Communicates value without overwhelming. Forces prioritization.</td></tr>
+            <tr><td>4</td><td>How it works (3-step visual process)</td><td>Reduces perceived complexity. Makes the product feel achievable.</td></tr>
+            <tr><td>5</td><td>Pricing (2–3 tiers, one highlighted)</td><td>Anchors value. Middle option does the heavy lifting.</td></tr>
+            <tr><td>6</td><td>FAQ</td><td>Handles objections passively. Reduces support load.</td></tr>
+            <tr><td>7</td><td>Final CTA / waitlist capture</td><td>Last conversion opportunity before they leave.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="prose"><strong>Technical standards — skip any of these and you will receive bad reviews:</strong></div>
+      <div class="chklist">
+        <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">Full dark/light mode toggle</div><div class="chks">Non-negotiable. Build color system around CSS variables from day one.</div></div></div>
+        <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">Mobile-first responsive</div><div class="chks">Test at 320px, 375px, 390px, 768px, 1280px, and 1440px. All six. Every section.</div></div></div>
+        <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">CMS-ready components</div><div class="chks">Pricing tables and testimonials hooked into Framer CMS — buyers update content without touching design.</div></div></div>
+        <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">Single-variable color system</div><div class="chks">One primary color token that cascades everywhere. Buyers rebrand in 60 seconds.</div></div></div>
+        <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">Tasteful Framer Motion animations</div><div class="chks">Entrance animations on scroll for feature sections, subtle hover states. Nothing like a 2018 Webflow template.</div></div></div>
+        <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">SVG/Lottie illustrations</div><div class="chks">No stock photos. Curated free-to-use SVG or Lottie assets matching the AI aesthetic.</div></div></div>
+        <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">Kitchen Sink page</div><div class="chks">A separate page showing every component variant. Makes previews impressive and customization obvious.</div></div></div>
+      </div>
+      <div class="prose"><strong>Build order &amp; timeline:</strong></div>
+      <div class="tw"><table>
+        <thead><tr><th>Week</th><th>Focus</th></tr></thead>
+        <tbody>
+          <tr><td>Week 1</td><td>Desktop design in Framer. Design system first — type scale, color tokens, spacing. Hero, pricing, and feature sections.</td></tr>
+          <tr><td>Week 2</td><td>Complete all sections. CMS collections for testimonials and FAQ. Responsive testing across all six breakpoints. No section ships without mobile sign-off.</td></tr>
+          <tr><td>Week 3</td><td>Polish: micro-animations, hover states, empty states, form error states. Build Kitchen Sink page. Write documentation.</td></tr>
+          <tr><td>Week 4</td><td>Record 5-minute Loom walkthrough. Soft launch to X audience at early access price. Collect feedback. Iterate before public launch.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="co green">
+        <div class="co-i">📧</div>
+        <div class="co-c">
+          <div class="co-t">Productize Your Documentation</div>
+          <div class="co-b">Don't just write docs — build an onboarding experience: <strong>3–5 email sequence</strong> after purchase (Lemon Squeezy handles this) · <strong>"Launch in 2 hours" checklist</strong> · Upgrade nudges in email #3 mentioning bundle and agency license. This turns a static product into a guided experience. Buyers who feel supported leave reviews. Buyers who feel abandoned ask for refunds.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PART 3 -->
+    <section class="section" id="s3">
+      <div class="sh">
+        <div class="sn">Part 3</div>
+        <div class="st"><h2>Building Your Template OS (The Defensibility Layer)</h2><p>The shared architecture that cheap copycats cannot replicate</p></div>
+      </div>
+      <div class="co amber">
+        <div class="co-i">🏗️</div>
+        <div class="co-c">
+          <div class="co-t">Why This Was Missing from v1</div>
+          <div class="co-b">The original plan had no answer to "what happens when a competitor copies your template for $29?" The Template OS is that answer. It takes 4–6 extra hours to build correctly and gives you a defensible architecture that cheap copycats cannot replicate without rebuilding everything from scratch.</div>
+        </div>
+      </div>
+      <div class="prose"><strong>What a Template OS includes:</strong></div>
+      <div class="chklist">
+        <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">Shared color token system</div><div class="chks">10 semantic variables: --brand, --surface, --text-primary, etc.</div></div></div>
+        <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">Shared typography scale</div><div class="chks">5 sizes, consistent line heights and letter spacing</div></div></div>
+        <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">Shared component library</div><div class="chks">Buttons, cards, badges, nav, footer — all reusable across every template</div></div></div>
+        <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">Shared CMS schema</div><div class="chks">Testimonials, pricing, FAQ — same structure across templates</div></div></div>
+        <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">Shared animation presets</div><div class="chks">5–8 entrance animations buyers can apply to any element</div></div></div>
+      </div>
+      <div class="prose"><strong>Your visual signature — lock in before template 1:</strong></div>
+      <div class="tw"><table>
+        <thead><tr><th>Element</th><th>Your Decision to Make</th></tr></thead>
+        <tbody>
+          <tr><td>Primary palette</td><td>2–3 colors max. One brand color, one neutral system, one accent. Define hex values permanently.</td></tr>
+          <tr><td>Type pairing</td><td>1 heading font + 1 body font. Stick to both across all templates. Buyers recognize the pairing.</td></tr>
+          <tr><td>Border radius</td><td>Pick one: sharp (0–2px), soft (6–8px), or round (12–16px). Never mix in the same template.</td></tr>
+          <tr><td>Illustration style</td><td>Abstract geometric, line-based, or isometric. One style. Sourced from the same library.</td></tr>
+          <tr><td>Animation signature</td><td>Your entrance animation should feel uniquely yours. Subtle fade-up, spring-based pop, or staggered reveal.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="co blue"><div class="co-i">🔗</div><div class="co-c"><div class="co-t">Cross-Template Compatibility Selling Point</div><div class="co-b">From template two onwards, advertise: <strong>"All our templates share the same component library and design tokens — combine sections from any template in minutes."</strong> This is a genuine purchasing reason that generic template sellers cannot offer.</div></div></div>
+    </section>
+
+    <!-- PART 4 -->
+    <section class="section" id="s4">
+      <div class="sh">
+        <div class="sn">Part 4</div>
+        <div class="st"><h2>Positioning, Pricing &amp; Differentiation</h2><p>Position on outcomes and persona — not aesthetics</p></div>
+      </div>
+      <div class="co blue">
+        <div class="co-i">📣</div>
+        <div class="co-c">
+          <div class="co-t">Your Positioning Statement</div>
+          <div class="co-b"><strong>Tagline:</strong> "Ship your AI SaaS landing page today. Built for founders, not designers."<br><br><strong>Supporting:</strong> "Skip 40 hours of design decisions. Go from idea to live page in under 2 hours. Every section is conversion-ready out of the box."</div>
+        </div>
+      </div>
+      <div class="prose"><strong>Four differentiation pillars — always lead with these:</strong></div>
+      <div class="cards c2">
+        <div class="card"><div class="ci">🎯</div><div class="ct">Persona-Specific</div><div class="cb">AI tools with waitlists, not generic SaaS. The buyer sees themselves in the product immediately.</div></div>
+        <div class="card"><div class="ci">⚡</div><div class="ct">Time-to-Launch Compression</div><div class="cb">Explicit claim: live in under 2 hours. Back it up with a timer in your demo video.</div></div>
+        <div class="card"><div class="ci">🚫</div><div class="ct">Decision-Free</div><div class="cb">Every design choice is made and documented. Buyers are buying your expertise, not a blank canvas.</div></div>
+        <div class="card"><div class="ci">♻️</div><div class="ct">Ongoing Support</div><div class="cb">Quarterly updates, documented changelogs, email onboarding. This is a relationship, not a transaction.</div></div>
+      </div>
+      <div class="prose"><strong>Pricing architecture — don't price at $19:</strong></div>
+      <div class="pricing">
+        <div class="pc">
+          <div class="pc-tier">Early Access</div>
+          <div class="pc-amt"><sup>$</sup>39</div>
+          <div class="pc-from">First 50 buyers only</div>
+          <ul class="pc-feats">
+            <li><span class="pfc">✓</span>Single license</li>
+            <li><span class="pfc">✓</span>Full template</li>
+            <li><span class="pfc">✓</span>Documentation + Loom</li>
+          </ul>
+        </div>
+        <div class="pc feat">
+          <div class="pc-star">Most Popular</div>
+          <div class="pc-tier">Single License</div>
+          <div class="pc-amt"><sup>$</sup>69</div>
+          <div class="pc-from">One project, commercial use</div>
+          <ul class="pc-feats">
+            <li><span class="pfc">✓</span>One commercial project</li>
+            <li><span class="pfc">✓</span>Documentation + Loom</li>
+            <li><span class="pfc">✓</span>All future updates</li>
+          </ul>
+        </div>
+        <div class="pc">
+          <div class="pc-tier">Extended License</div>
+          <div class="pc-amt"><sup>$</sup>149</div>
+          <div class="pc-from">Unlimited projects</div>
+          <ul class="pc-feats">
+            <li><span class="pfc">✓</span>Unlimited projects</li>
+            <li><span class="pfc">✓</span>Resell rights excluded</li>
+            <li><span class="pfc">✓</span>Priority support</li>
+          </ul>
+        </div>
+      </div>
+      <div class="prose"><strong>Off-platform premium tiers (highest margin):</strong></div>
+      <div class="tw"><table>
+        <thead><tr><th>Tier</th><th>Price</th><th>What's Included</th></tr></thead>
+        <tbody>
+          <tr><td>Bundle</td><td><strong>$129</strong></td><td>Template + 90-day email support + all future updates. Highest-margin product.</td></tr>
+          <tr><td>Team License</td><td><strong>$299</strong></td><td>Up to 5 seats. Targets small agencies and startup teams.</td></tr>
+          <tr><td>Agency License</td><td><strong>$499+</strong></td><td>Unlimited client projects. Direct outreach to small web agencies.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- PART 5 -->
+    <section class="section" id="s5">
+      <div class="sh">
+        <div class="sn">Part 5</div>
+        <div class="st"><h2>Publishing &amp; Multi-Channel Distribution</h2><p>SEO and YouTube layers that create sustainable, algorithmic discovery</p></div>
+      </div>
+      <div class="prose"><strong>Framer Marketplace optimization:</strong></div>
+      <div class="chklist">
+        <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">Preview thumbnail — your #1 conversion driver</div><div class="chks">Dark background, hero section front/center, desktop + mobile device mockups. Study top 10 sellers before designing.</div></div></div>
+        <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">Description structure — write it like a landing page</div><div class="chks">Open with pain point · 7 specific features with benefits · close with social proof</div></div></div>
+        <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">Tags: SaaS, Landing Page, AI, Dark Mode, CMS, Business</div><div class="chks">Framer's search algorithm is tag-driven. Use all relevant tags.</div></div></div>
+        <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">First 10 reviews — personally message each buyer</div><div class="chks">Ask for review in exchange for 1:1 support. These reviews determine your listing trajectory.</div></div></div>
+      </div>
+      <div class="prose"><strong>Distribution channels ranked by ROI:</strong></div>
+      <div class="ranklist">
+        <div class="rr"><div class="rn g">1</div><div class="rc">Framer Marketplace SEO</div><div class="rm">2–4 weeks</div><div class="rb-wrap"><div class="rb" style="width:100%"></div></div></div>
+        <div class="rr"><div class="rn g">2</div><div class="rc">X Build-in-Public</div><div class="rm">Day 1+</div><div class="rb-wrap"><div class="rb" style="width:90%"></div></div></div>
+        <div class="rr"><div class="rn">3</div><div class="rc">YouTube Demos <span class="badge new">New</span></div><div class="rm">Week 3+</div><div class="rb-wrap"><div class="rb" style="width:80%"></div></div></div>
+        <div class="rr"><div class="rn">4</div><div class="rc">SEO Landing Pages <span class="badge new">New</span></div><div class="rm">Month 1+</div><div class="rb-wrap"><div class="rb" style="width:75%"></div></div></div>
+        <div class="rr"><div class="rn">5</div><div class="rc">Your Own Site</div><div class="rm">Week 4</div><div class="rb-wrap"><div class="rb" style="width:65%"></div></div></div>
+        <div class="rr"><div class="rn">6</div><div class="rc">ProductHunt</div><div class="rm">Week 8</div><div class="rb-wrap"><div class="rb" style="width:60%"></div></div></div>
+        <div class="rr"><div class="rn">7</div><div class="rc">Reddit (r/Framer, r/webdev)</div><div class="rm">Ongoing</div><div class="rb-wrap"><div class="rb" style="width:50%"></div></div></div>
+        <div class="rr"><div class="rn">8</div><div class="rc">Design Newsletters</div><div class="rm">Month 2</div><div class="rb-wrap"><div class="rb" style="width:45%"></div></div></div>
+        <div class="rr"><div class="rn">9</div><div class="rc">Affiliate Program (30% commission)</div><div class="rm">Month 2</div><div class="rb-wrap"><div class="rb" style="width:40%"></div></div></div>
+      </div>
+      <div class="co green">
+        <div class="co-i">🔍</div>
+        <div class="co-c">
+          <div class="co-t">The SEO Distribution Layer (New in This Edition)</div>
+          <div class="co-b"><strong>YouTube strategy:</strong> Record a 5–10 minute "I built this Framer template" walkthrough. Title: "Building a Framer Template for AI SaaS Founders (Full Walkthrough)." Will rank for "Framer SaaS template" searches for years.<br><br><strong>Blog / content hub:</strong> 3–5 articles targeting high-intent keywords. Host on your own domain for SEO credit.<br><br><strong>Template comparison pages:</strong> "[Your Template] vs [Competitor]" converts extremely well. Buyers searching these are in final purchase decision stage.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PART 6 -->
+    <section class="section" id="s6">
+      <div class="sh">
+        <div class="sn">Part 6</div>
+        <div class="st"><h2>Build in Public on X — The Full Playbook</h2><p>Including the writing-from-zero methodology missing from every other guide</p></div>
+      </div>
+      <div class="co amber">
+        <div class="co-i">✍️</div>
+        <div class="co-c">
+          <div class="co-t">Writing From Zero — The Gap This Section Addresses</div>
+          <div class="co-b">There is a significant difference between "post 3–5 times per week" and "post content that people actually want to read." That gap is writing fluency. Most build-in-public advice glosses over it because it is uncomfortable to admit how wide it is.</div>
+        </div>
+      </div>
+      <div class="accs">
+        <div class="acc open" onclick="toggle(this)">
+          <div class="acc-h"><span class="acc-ico">📝</span>How to Develop Voice Before You Need It<svg class="acc-arr" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></div>
+          <div class="acc-body">
+            <div class="steps">
+              <div class="step"><div class="step-n a">1</div><div class="step-body"><div class="step-t">Read 30 posts from 3 accounts your buyer follows</div><div class="step-d">Not design accounts. Founder accounts. For each high-engagement post, write down: what emotion does this create? Curiosity? Recognition? Validation? Agreement?</div></div></div>
+              <div class="step"><div class="step-n a">2</div><div class="step-body"><div class="step-t">Write 10 posts you will never publish</div><div class="step-d">Use this structure for each: <strong>Observation</strong> (something specific you noticed) → <strong>Implication</strong> (why it matters for your buyer) → <strong>Contrast</strong> (what most people do instead). Delete any post where you can't complete all three — the insight isn't sharp enough.</div></div></div>
+              <div class="step"><div class="step-n a">3</div><div class="step-body"><div class="step-t">Find your one honest opinion about design</div><div class="step-d">Example: "Most SaaS templates are built for agencies, not founders — you can see it in every design decision they make." That's a point of view. "I make templates for founders" is not.</div></div></div>
+              <div class="step"><div class="step-n a">4</div><div class="step-body"><div class="step-t">Lower the bar for your first 20 posts</div><div class="step-d">The goal is not to go viral. It's to establish the habit of public thinking. The only failure is not posting. A post that gets 3 likes still exists, still gets indexed, still gives you data.</div></div></div>
+            </div>
+            <div class="co blue" style="margin-bottom:0"><div class="co-i">💡</div><div class="co-c"><div class="co-t">The highest-performing format from zero</div><div class="co-b">The <em>specific observation thread</em>. Not "here are 5 things I learned" but "I spent 4 hours on the hero section. Here is the one decision I almost got wrong, why, and what I did instead." Specificity of "4 hours" and "one decision" creates credibility before the insight lands.</div></div></div>
+          </div>
+        </div>
+        <div class="acc" onclick="toggle(this)">
+          <div class="acc-h"><span class="acc-ico">📅</span>Pre-Launch Phase (Weeks 1–4): Building Anticipation<svg class="acc-arr" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></div>
+          <div class="acc-body">
+            <div class="prose" style="margin-bottom:8px"><strong>Week 1:</strong> Validation post · first design decision (screenshot both options) · dark/light toggle working</div>
+            <div class="prose" style="margin-bottom:8px"><strong>Week 2–3:</strong> Thought leadership thread (3 things every SaaS template gets wrong) · technical deep-dive · native Loom under 90 seconds · A/B poll on pricing page</div>
+            <div class="prose" style="margin-bottom:0"><strong>Week 4:</strong> Soft launch to email list at $39 · documentation post · 7-day countdown post (functions as a landing page in tweet format)</div>
+          </div>
+        </div>
+        <div class="acc" onclick="toggle(this)">
+          <div class="acc-h"><span class="acc-ico">🚀</span>Launch Day Choreography<svg class="acc-arr" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></div>
+          <div class="acc-body">
+            <div class="tw"><table>
+              <thead><tr><th>Time</th><th>Action</th></tr></thead>
+              <tbody>
+                <tr><td>8:00 AM</td><td>Main launch tweet with demo GIF, price, link, and specific claim ("go live in under 2 hours"). Tag @framer.</td></tr>
+                <tr><td>12:00 PM</td><td>Thread: "I spent 3 weeks building this. Here is every design decision and why." 8–10 tweets. Your most shareable content.</td></tr>
+                <tr><td>6:00 PM</td><td>Reply to every comment, quote-tweet every share, post your early sales number.</td></tr>
+                <tr><td>Before launch</td><td><strong>Line up 3–5 people to engage in the first 30 minutes.</strong> This is the single most important thing for algorithmic amplification.</td></tr>
+              </tbody>
+            </table></div>
+          </div>
+        </div>
+        <div class="acc" onclick="toggle(this)">
+          <div class="acc-h"><span class="acc-ico">🔁</span>Post-Launch Ongoing Content &amp; The X Growth Loop<svg class="acc-arr" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></div>
+          <div class="acc-body">
+            <div class="chklist" style="margin-bottom:12px">
+              <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">Milestone posts — "50 sales," "first $1,000," "100 buyers"</div></div></div>
+              <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">Buyer spotlights — tag users who launched with your template</div></div></div>
+              <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">Update posts — "Just pushed an update: new testimonial variant, mobile fix. All buyers get it free."</div></div></div>
+              <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">Adjacent value threads — SaaS conversion copywriting, pricing table structure, hero headline formulas</div></div></div>
+              <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">Honest retrospectives — "1 month in, here is what sold, what didn't, what I'm building next"</div></div></div>
+            </div>
+            <div class="co blue" style="margin-bottom:0"><div class="co-i">🔄</div><div class="co-c"><div class="co-t">The X Growth Loop</div><div class="co-b">Post valuable design thinking content → gain followers in indie maker community → followers buy template → they share on X and tag you → new followers discover you → repeat with every new template. <strong>Key: your content must be genuinely useful independent of your product.</strong></div></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PART 7 -->
+    <section class="section" id="s7">
+      <div class="sh">
+        <div class="sn">Part 7</div>
+        <div class="st"><h2>Conversion Optimization</h2><p>Treat your listing as a live conversion funnel, not a static product page</p></div>
+      </div>
+      <div class="prose"><strong>Funnel metrics — track weekly:</strong></div>
+      <div class="funneltbl">
+        <div class="fr"><div class="fr-m">Marketplace listing CTR</div><div class="fr-t">&gt;3%</div><div class="fr-a">Below target? Redesign thumbnail. Test dark vs light background.</div></div>
+        <div class="fr"><div class="fr-m">Demo view rate</div><div class="fr-t">&gt;60%</div><div class="fr-a">Below target? Add demo button above the fold. Feature live preview prominently.</div></div>
+        <div class="fr"><div class="fr-m">Demo → Purchase rate</div><div class="fr-t">&gt;8%</div><div class="fr-a">Below target? Improve demo quality. Add Kitchen Sink page. Reduce price friction with early access.</div></div>
+        <div class="fr"><div class="fr-m">Review rate (buyers)</div><div class="fr-t">&gt;25%</div><div class="fr-a">Below target? Add review request to email onboarding Day 3.</div></div>
+        <div class="fr"><div class="fr-m">Repeat buyer rate</div><div class="fr-t">&gt;40%</div><div class="fr-a">Below target? Email list + 25% loyalty discount for past buyers.</div></div>
+      </div>
+      <div class="prose"><strong>A/B testing — run one test at a time, 200+ views before conclusions:</strong></div>
+      <div class="steps">
+        <div class="step"><div class="step-n">1</div><div class="step-body"><div class="step-t">Thumbnail: Dark vs light background</div><div class="step-d">Highest-leverage test. Thumbnail drives 60–70% of click-through decisions.</div></div></div>
+        <div class="step"><div class="step-n">2</div><div class="step-body"><div class="step-t">Headline: Outcome-focused vs persona-focused</div><div class="step-d">"Launch your AI startup page today" vs "Built for solo founders shipping AI tools"</div></div></div>
+        <div class="step"><div class="step-n">3</div><div class="step-body"><div class="step-t">Price: $69 vs $79 (after first 50 sales)</div><div class="step-d">A $10 price increase with no conversion drop = pure margin.</div></div></div>
+        <div class="step"><div class="step-n">4</div><div class="step-body"><div class="step-t">Description: Long-form vs short punchy (after 500 views)</div></div></div>
+      </div>
+      <div class="prose"><strong>Post-purchase activation sequence:</strong></div>
+      <div class="eseq">
+        <div class="ei"><div class="ed">Day 0</div><div><div class="et">Delivery email — "Your template is ready — go live in 2 hours"</div><div class="eb">Immediate delivery with clear download link.</div></div></div>
+        <div class="ei"><div class="ed">Day 1</div><div><div class="et">Onboarding — link to docs and Loom walkthrough</div><div class="eb">One actionable tip: "The fastest way to rebrand is to update the primary color token first."</div></div></div>
+        <div class="ei"><div class="ed">Day 3</div><div><div class="et">Support check-in + review request</div><div class="eb">"If the template saved you time, a quick review helps a lot — takes 30 seconds."</div></div></div>
+        <div class="ei"><div class="ed">Day 7</div><div><div class="et">Value email — adjacent resource, no pitch</div><div class="eb">Share a thread on SaaS copywriting or conversion design. No promotion.</div></div></div>
+        <div class="ei"><div class="ed">Day 14</div><div><div class="et">Upsell — bundle and upcoming templates</div><div class="eb">"You get 30% off the next one as a past buyer."</div></div></div>
+      </div>
+    </section>
+
+    <!-- PART 8 -->
+    <section class="section" id="s8">
+      <div class="sh">
+        <div class="sn">Part 8</div>
+        <div class="st"><h2>Scaling Revenue After Launch</h2><p>Dual-scenario projections: Warm Start vs Cold Start with honest month-by-month numbers</p></div>
+      </div>
+      <div class="prose"><strong>Recommended catalog sequence:</strong></div>
+      <div class="steps">
+        <div class="step"><div class="step-n a">1</div><div class="step-body"><div class="step-t">AI SaaS landing page for solo founders</div><div class="step-d">Your beachhead. The product everything else is built around.</div></div></div>
+        <div class="step"><div class="step-n a">2</div><div class="step-body"><div class="step-t">Developer portfolio with case study structure</div><div class="step-d">Same buyer, different use case. Past buyers convert at 40–60%.</div></div></div>
+        <div class="step"><div class="step-n a">3</div><div class="step-body"><div class="step-t">Changelog / product update page</div><div class="step-d">Complements template 1 buyers perfectly.</div></div></div>
+        <div class="step"><div class="step-n a">4</div><div class="step-body"><div class="step-t">Investor pitch microsite</div><div class="step-d">Follows the same founder on their next funding round.</div></div></div>
+      </div>
+      <div class="prose"><strong>Bundle pricing once you have 3 templates:</strong></div>
+      <div class="tw"><table>
+        <thead><tr><th>Bundle</th><th>Price</th><th>Why It Converts</th></tr></thead>
+        <tbody>
+          <tr><td>Starter Bundle (2 templates)</td><td><strong>$99</strong></td><td>Clearly beats buying two at $69 each</td></tr>
+          <tr><td>Complete Bundle (all templates)</td><td><strong>$199</strong></td><td>Your most visible offer</td></tr>
+          <tr><td>Agency Bundle (all + agency license)</td><td><strong>$599</strong></td><td>Your highest-ticket product</td></tr>
+        </tbody>
+      </table></div>
+      <hr>
+      <div class="prose"><strong>Revenue projections — two honest tracks:</strong></div>
+      <div class="co amber"><div class="co-i">⚠️</div><div class="co-c"><div class="co-t">Read the track assumptions before reading numbers</div><div class="co-b">Most first-time builders are on the Cold Start track. Treating Warm Start numbers as a baseline when you're on Cold Start is the most reliable way to feel like you're failing when you're not.</div></div></div>
+      <div class="prose"><strong>Track A: Warm Start</strong> (existing X audience 500+, prior shipped work, warm network)</div>
+      <div class="tw"><table>
+        <thead><tr><th>Stage</th><th>Monthly Revenue</th><th>Key Driver</th></tr></thead>
+        <tbody>
+          <tr><td>Month 1–2</td><td><strong>$1,000–$3,000</strong></td><td>X launch + marketplace. 500+ followers pre-launch, 30+ early access buyers.</td></tr>
+          <tr><td>Month 3–4</td><td><strong>$3,000–$5,000</strong></td><td>Template 2 + bundles. Affiliate traffic beginning to convert.</td></tr>
+          <tr><td>Month 5–6</td><td><strong>$5,000–$10,000</strong></td><td>SEO + YouTube compounding.</td></tr>
+          <tr><td>Month 7+</td><td><strong>$10,000+</strong></td><td>Featured placement, 3+ templates, repeat buyer loop active.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="prose"><strong>Track B: Cold Start</strong> (no existing audience, first time building in public, zero prior buyers)</div>
+      <div class="tw"><table>
+        <thead><tr><th>Stage</th><th>Monthly Revenue</th><th>Key Driver</th></tr></thead>
+        <tbody>
+          <tr><td>Month 1–2</td><td><strong>$0–$300</strong></td><td>Marketplace only. Organic discovery is slow. X has not compounded yet. Expect this.</td></tr>
+          <tr><td>Month 3–4</td><td><strong>$300–$800</strong></td><td>First reviews driving marketplace rank. X audience at 200–400 followers.</td></tr>
+          <tr><td>Month 5–6</td><td><strong>$800–$2,000</strong></td><td>Consistent content + Template 2. First affiliate link placed.</td></tr>
+          <tr><td>Month 7–9</td><td><strong>$2,000–$5,000</strong></td><td>First YouTube video indexed. Bundle conversions from early buyers.</td></tr>
+          <tr><td>Month 10+</td><td><strong>$5,000–$10,000+</strong></td><td>All channels compounding. Requires consistent execution across 10 months.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="co blue"><div class="co-i">📊</div><div class="co-c"><div class="co-t">The honest framing for Cold Start builders</div><div class="co-b">Months 1 and 2 will feel like nothing is working. That is normal. The Framer marketplace takes 3–6 weeks to index meaningfully. X compounds slowly from zero. The correct response to flat month-one numbers is to look at your <strong>listing CTR and X engagement</strong>, not your revenue. If those are moving, revenue will follow.</div></div></div>
+    </section>
+
+    <!-- PART 9 -->
+    <section class="section" id="s9">
+      <div class="sh">
+        <div class="sn">Part 9</div>
+        <div class="st"><h2>Master Timeline at a Glance</h2><p>Optimal vs Realistic — with buffer rules and stage-compression guidance</p></div>
+      </div>
+      <div class="co amber">
+        <div class="co-i">📏</div>
+        <div class="co-c">
+          <div class="co-t">Optimal vs Realistic Rule</div>
+          <div class="co-b">Most builders slip 2–4 weeks somewhere in the first two months. A Week 6 launch that slips to Week 9 is not failure. Launching at Week 6 with broken mobile and no documentation is. <strong>Never compress validation (Week 0) or documentation (Week 4). Compress Week 3 polish instead.</strong></div>
+        </div>
+      </div>
+      <div class="tl">
+        <div class="tl-item done"><div class="tl-dot"></div><div class="tl-lbl">Week 0</div><div class="tl-title">Validate on X — no shortcuts</div><div class="tl-desc">30+ signal responses. Post wireframe sketch. Run Market Entry Scoring Model (Part 12). Do not skip this week.</div></div>
+        <div class="tl-item done"><div class="tl-dot"></div><div class="tl-lbl">Week 1</div><div class="tl-title">Design system + core sections</div>
+          <div class="tl-dual">
+            <div class="tl-col"><div class="tl-col-h">Optimal</div><div class="tl-col-b">Type scale, color tokens, spacing. Hero, pricing, features. Template OS architecture.</div></div>
+            <div class="tl-col"><div class="tl-col-h">Realistic</div><div class="tl-col-b">May take 10 days if design system decisions are slow. That's fine.</div></div>
+          </div>
+        </div>
+        <div class="tl-item done"><div class="tl-dot"></div><div class="tl-lbl">Week 2</div><div class="tl-title">All sections + CMS + responsive</div>
+          <div class="tl-dual">
+            <div class="tl-col"><div class="tl-col-h">Optimal</div><div class="tl-col-b">All sections complete. CMS for testimonials and FAQ. Tested across all 6 breakpoints.</div></div>
+            <div class="tl-col"><div class="tl-col-h">Realistic</div><div class="tl-col-b">Expect 1–2 sections to need rework after mobile testing. Budget 3 extra days.</div></div>
+          </div>
+        </div>
+        <div class="tl-item active"><div class="tl-dot"></div><div class="tl-lbl">Week 3</div><div class="tl-title">Polish + Kitchen Sink + Loom</div>
+          <div class="tl-dual">
+            <div class="tl-col"><div class="tl-col-h">Optimal</div><div class="tl-col-b">Micro-animations, hover states, empty states. Kitchen Sink page. Record walkthrough.</div></div>
+            <div class="tl-col"><div class="tl-col-h">Realistic</div><div class="tl-col-b">Most commonly compressed stage. Do not skip the Kitchen Sink page — it drives listing impressions.</div></div>
+          </div>
+        </div>
+        <div class="tl-item"><div class="tl-dot"></div><div class="tl-lbl">Week 4</div><div class="tl-title">Documentation + early access soft launch</div>
+          <div class="tl-dual">
+            <div class="tl-col"><div class="tl-col-h">Optimal</div><div class="tl-col-b">Write docs. Soft launch to X at $39. Collect first 10 buyer emails.</div></div>
+            <div class="tl-col"><div class="tl-col-h">Realistic</div><div class="tl-col-b">Documentation often takes longer. Minimum 2 days. Must cover: colors, CMS, and publish.</div></div>
+          </div>
+        </div>
+        <div class="tl-item"><div class="tl-dot"></div><div class="tl-lbl">Week 5</div><div class="tl-title">Lemon Squeezy + email sequence + thumbnail</div><div class="tl-desc">Thumbnail usually requires 2–3 iterations. Start it in Week 4 in parallel.</div></div>
+        <div class="tl-item launch"><div class="tl-dot"></div><div class="tl-lbl">🚀 Week 6–9</div><div class="tl-title">Public Launch</div><div class="tl-desc">Framer marketplace + X launch day choreography + ProductHunt submission. Most realistic window is Week 9 — that's not late, it's honest.</div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div class="tl-lbl">Weeks after launch</div><div class="tl-title">Respond, iterate, collect reviews</div><div class="tl-desc">Don't start template 2 until reviews are consistent. Expect 2–3 weeks of reactive work.</div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div class="tl-lbl">Month 2–3</div><div class="tl-title">Affiliates + YouTube + SEO content hub</div><div class="tl-desc">YouTube and SEO often slip to Month 3–4. That's acceptable — prioritize buyer satisfaction first.</div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div class="tl-lbl">Month 3–5</div><div class="tl-title">Template 2 launch + bundle pricing</div><div class="tl-desc">Template 2 typically takes 2 weeks less than template 1 due to Template OS reuse.</div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div class="tl-lbl">Month 5–7</div><div class="tl-title">Apply for Framer Partner + Template 3</div><div class="tl-desc">Partner program application is most effective once you have 50+ reviews and consistent monthly sales.</div></div>
+      </div>
+    </section>
+
+    <!-- PART 10 -->
+    <section class="section" id="s10">
+      <div class="sh">
+        <div class="sn">Part 10</div>
+        <div class="st"><h2>The 10 Principles</h2><p>What separates $500/month from $10,000/month — internalize all 10</p></div>
+      </div>
+      <div class="principles">
+        <div class="pr"><div class="pr-n">01</div><div><div class="pr-t">Specificity is your moat.</div><div class="pr-b">"AI SaaS template" is a category. "Framer template for solo founders launching AI tools with waitlists" is a niche. Niches have margins. Categories have price wars.</div></div></div>
+        <div class="pr"><div class="pr-n">02</div><div><div class="pr-t">You are selling decisions, not design.</div><div class="pr-b">Every design choice you make is one less decision your buyer has to make. Document every decision. The documentation is the product.</div></div></div>
+        <div class="pr"><div class="pr-n">03</div><div><div class="pr-t">Distribution beats design.</div><div class="pr-b">A mediocre template with great distribution beats a beautiful template with none. Build your audience before you build your product.</div></div></div>
+        <div class="pr"><div class="pr-n">04</div><div><div class="pr-t">Your listing is a landing page.</div><div class="pr-b">Optimize the thumbnail, headline, description, and tags like a paid ad with a $10K/month budget. Because it effectively is.</div></div></div>
+        <div class="pr"><div class="pr-n">05</div><div><div class="pr-t">Reviews compound like interest.</div><div class="pr-b">Your first 10 reviews determine your next 100 sales. Get them at any cost — including 1:1 support for early buyers.</div></div></div>
+        <div class="pr"><div class="pr-n">06</div><div><div class="pr-t">Documentation is a revenue driver.</div><div class="pr-b">Templates with great docs get 5-star reviews. Templates without them get support tickets and refund requests. Same product, different outcome.</div></div></div>
+        <div class="pr"><div class="pr-n">07</div><div><div class="pr-t">Content attracts buyers before they are ready.</div><div class="pr-b">The founder who reads your thread on SaaS pricing tables today buys your template in 3 weeks when they are ready to launch.</div></div></div>
+        <div class="pr"><div class="pr-n">08</div><div><div class="pr-t">One template is a product. Three is a business.</div><div class="pr-b">Your catalog is your defensibility. Build with a Template OS from day one so each product reinforces the others.</div></div></div>
+        <div class="pr"><div class="pr-n">09</div><div><div class="pr-t">Measure everything, change one thing at a time.</div><div class="pr-b">Thumbnail CTR, demo view rate, demo-to-purchase rate. Run one A/B test at a time. Let data override intuition.</div></div></div>
+        <div class="pr"><div class="pr-n">10</div><div><div class="pr-t">Your structural moat is the floor, not the ceiling.</div><div class="pr-b">The Template OS protects you from copycats. Your personal brand, audience ownership, and buyer relationships are what take you to $10K/month and beyond.</div></div></div>
+      </div>
+    </section>
+
+    <!-- PART 12 -->
+    <section class="section" id="s12">
+      <div class="sh">
+        <div class="sn">Part 12</div>
+        <div class="st"><h2>Anti-Saturation Framework</h2><p>When to enter, when to pivot, when to kill — before committing 4 weeks of build time</p></div>
+      </div>
+      <div class="prose"><strong>Three red flags that mean "Do Not Enter":</strong></div>
+      <div class="accs">
+        <div class="acc open" onclick="toggle(this)">
+          <div class="acc-h"><span class="acc-ico">🚩</span>Red Flag 1: Top 10 listings all have &gt;4.8 rating and &gt;100 reviews<svg class="acc-arr" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></div>
+          <div class="acc-body"><div class="prose" style="margin-bottom:4px">Market is mature, buyers are satisfied, the bar to displace incumbents is extremely high. You're not entering a market — you're trying to steal share from entrenched, optimized products.</div><div class="co blue" style="margin-bottom:0"><div class="co-i">💡</div><div class="co-c"><div class="co-t">What to do</div><div class="co-b">Go one level narrower. Saturation at category level almost never extends to sub-niche level.</div></div></div></div>
+        </div>
+        <div class="acc" onclick="toggle(this)">
+          <div class="acc-h"><span class="acc-ico">🚩</span>Red Flag 2: No visible complaints to exploit<svg class="acc-arr" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></div>
+          <div class="acc-body"><div class="prose" style="margin-bottom:4px">Scan every review in top 10 listings. If you can't find at least 3 recurring complaints — missing features, poor docs, no dark mode — there's no clear gap. Buyers are satisfied.</div><div class="co blue" style="margin-bottom:0"><div class="co-i">💡</div><div class="co-c"><div class="co-t">What to do</div><div class="co-b">Move to a different category. The template category with the most complaints is your highest-opportunity entry point.</div></div></div></div>
+        </div>
+        <div class="acc" onclick="toggle(this)">
+          <div class="acc-h"><span class="acc-ico">🚩</span>Red Flag 3: Visual styles have already converged<svg class="acc-arr" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></div>
+          <div class="acc-body"><div class="prose" style="margin-bottom:4px">If top 10 listings all look similar — same dark hero, same gradient cards, same glassmorphism — the aesthetic has been commoditized.</div><div class="co blue" style="margin-bottom:0"><div class="co-i">💡</div><div class="co-c"><div class="co-t">What to do</div><div class="co-b">Contrarian aesthetic is the only winning move. If everyone is dark, launch light. If everyone uses gradient cards, use flat minimal cards.</div></div></div></div>
+        </div>
+      </div>
+      <div class="prose"><strong>Market Entry Scoring Model — only enter if total score is 18 or higher:</strong></div>
+      <div class="tw"><table>
+        <thead><tr><th>Dimension</th><th>Score 1</th><th>Score 3</th><th>Score 5</th></tr></thead>
+        <tbody>
+          <tr><td>Visible demand</td><td>Hard to find buyer intent</td><td>Occasional demand signals</td><td>Active weekly buyer posts</td></tr>
+          <tr><td>Review gap</td><td>Top listings 4.8+ no complaints</td><td>Some complaints, minor gaps</td><td>Recurring complaints, obvious unmet needs</td></tr>
+          <tr><td>Visual freshness</td><td>Styles fully converged</td><td>Some differentiation possible</td><td>Clear opportunity to own a distinct look</td></tr>
+          <tr><td>Niche specificity</td><td>Maxed out, no sub-niches left</td><td>One level of narrowing possible</td><td>Multiple sub-niches, none owned yet</td></tr>
+          <tr><td>Your skill match</td><td>Significant gap required</td><td>Moderate gap, closeable in 2 weeks</td><td>Strong match, minimal upskilling</td></tr>
+        </tbody>
+      </table></div>
+      <div class="cards c3">
+        <div class="card"><div class="ci">🔄</div><div class="ct">Pivot Signals</div><div class="cb">Live 6 weeks, fewer than 15 sales · Demo rate &gt;40% but purchase rate &lt;3% · Consistent feedback about missing feature requiring major rework</div></div>
+        <div class="card gn"><div class="ci">🚀</div><div class="ct">Double Down Signals</div><div class="cb">50 sales before week 8 · Review score 4.7+ with zero core complaints · Buyers tagging you without being asked</div></div>
+        <div class="card rd"><div class="ci">🛑</div><div class="ct">Kill Signals</div><div class="cb">10 weeks live, consistent content, fewer than 10 sales · Listing CTR below 1% despite thumbnail iteration · Well-resourced competitor entered with better execution + lower pricing</div></div>
+      </div>
+    </section>
+
+    <!-- PART 13 -->
+    <section class="section" id="s13">
+      <div class="sh">
+        <div class="sn">Part 13</div>
+        <div class="st"><h2>Competitive Intelligence Playbook</h2><p>The exact methodology to identify precisely where to beat the competition</p></div>
+      </div>
+      <div class="prose"><strong>The Competitor Teardown — run this for the top 5 templates before writing a single line of your design brief:</strong></div>
+      <div class="steps">
+        <div class="step"><div class="step-n a">1</div><div class="step-body"><div class="step-t">Buy or preview the top 3</div><div class="step-d">Don't audit from listing screenshots. Get inside the actual product. Pay the $49. You're buying competitive intelligence worth 10x the price. Note everything that frustrates you — that frustration is your product brief.</div></div></div>
+        <div class="step"><div class="step-n a">2</div><div class="step-body"><div class="step-t">Score each competitor across 6 dimensions (1–5 scale)</div><div class="step-d">Design quality · Customizability · Speed to launch · Documentation quality · Visual freshness · Mobile execution</div></div></div>
+        <div class="step"><div class="step-n a">3</div><div class="step-body"><div class="step-t">Map the gap</div><div class="step-d">Take the average score for each dimension across all 5 competitors. Any dimension averaging below 3.5 is your entry point. <strong>Build to a 5 in that dimension.</strong></div></div></div>
+      </div>
+      <div class="co blue"><div class="co-i">🎯</div><div class="co-c"><div class="co-t">The Differentiation Decision Rule</div><div class="co-b">Choose your 2 highest-opportunity dimensions (where competitors score lowest), make those your public positioning pillars, and build the rest to "good enough" standard.<br><br>Example: If competitors score 2.1 on documentation and 2.4 on mobile, your positioning becomes: <strong>"The only AI SaaS template with production-quality mobile and a full documentation hub."</strong></div></div></div>
+      <div class="prose"><strong>How to beat a top listing with 200+ reviews:</strong></div>
+      <div class="steps">
+        <div class="step"><div class="step-n">1</div><div class="step-body"><div class="step-t">Don't compete directly</div><div class="step-d">200 reviews has too much social proof momentum to displace head-on. Go one level narrower.</div></div></div>
+        <div class="step"><div class="step-n">2</div><div class="step-body"><div class="step-t">Steal their complaints</div><div class="step-d">Sort reviews by lowest rating. Build the template their buyers wish existed.</div></div></div>
+        <div class="step"><div class="step-n">3</div><div class="step-body"><div class="step-t">Win on recency</div><div class="step-d">Older top listings often have dated aesthetics. "Built for 2025" is a legitimate positioning if you can back it up.</div></div></div>
+        <div class="step"><div class="step-n">4</div><div class="step-body"><div class="step-t">Win on documentation</div><div class="step-d">Almost no top-selling template has genuinely excellent documentation. The most underexploited competitive gap in the entire market.</div></div></div>
+      </div>
+    </section>
+
+    <!-- PART 14 -->
+    <section class="section" id="s14">
+      <div class="sh">
+        <div class="sn">Part 14</div>
+        <div class="st"><h2>Failure Mode Scenarios + Fixes</h2><p>Find your failure mode below, identify the root cause, apply the fix — everything else is noise</p></div>
+      </div>
+      <div class="accs">
+        <div class="acc open" onclick="toggle(this)">
+          <div class="acc-h"><span class="acc-ico">😶</span>Stuck at $0 After Launch<svg class="acc-arr" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></div>
+          <div class="acc-body">
+            <div class="fm-head"><span>Root Cause</span><span>Diagnostic Signal</span><span>Fix</span></div>
+            <div class="fm-grid">
+              <div class="fm"><div class="fm-cause">Wrong niche</div><div class="fm-signal">No one asking about this category on X</div><div class="fm-fix">Kill it. Apply Market Entry Scoring Model (Part 12) to a new niche before building again.</div></div>
+              <div class="fm"><div class="fm-cause">Bad thumbnail</div><div class="fm-signal">Listing CTR below 1.5%</div><div class="fm-fix">Redesign entirely. Test dark background, desktop + mobile mockup, no text clutter.</div></div>
+              <div class="fm"><div class="fm-cause">No audience</div><div class="fm-signal">Launched to zero followers with no pre-launch build</div><div class="fm-fix">Distribution problem, not a product problem. Spend 3 weeks building X presence before re-launching.</div></div>
+              <div class="fm"><div class="fm-cause">Price anchoring failure</div><div class="fm-signal">Buyers viewing demo but not purchasing</div><div class="fm-fix">Rewrite listing to lead with time saved. Add "go live in under 2 hours" as your first claim.</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="acc" onclick="toggle(this)">
+          <div class="acc-h"><span class="acc-ico">😐</span>Stuck at $500/Month<svg class="acc-arr" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></div>
+          <div class="acc-body">
+            <div class="fm-head"><span>Root Cause</span><span>Diagnostic Signal</span><span>Fix</span></div>
+            <div class="fm-grid">
+              <div class="fm"><div class="fm-cause">Single product dependency</div><div class="fm-signal">90%+ revenue from one template</div><div class="fm-fix">Launch template 2. Past buyers convert at 40–60%. One email is your fastest revenue lever.</div></div>
+              <div class="fm"><div class="fm-cause">No repeat buyer loop</div><div class="fm-signal">Zero buyers have purchased more than once</div><div class="fm-fix">Introduce Starter Bundle. Email every past buyer with 25% loyalty discount.</div></div>
+              <div class="fm"><div class="fm-cause">X content attracting creators not founders</div><div class="fm-signal">Posts get likes but no DM inquiries</div><div class="fm-fix">Shift topics: less "how I built X," more "how founders can do Y."</div></div>
+              <div class="fm"><div class="fm-cause">Distribution too narrow</div><div class="fm-signal">100% traffic from one channel</div><div class="fm-fix">Add YouTube or SEO. One channel failure should not crater your revenue.</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="acc" onclick="toggle(this)">
+          <div class="acc-h"><span class="acc-ico">😢</span>Good Sales but Bad Reviews<svg class="acc-arr" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></div>
+          <div class="acc-body">
+            <div class="fm-grid">
+              <div class="fm"><div class="fm-cause">Documentation gap</div><div class="fm-signal">Reviews mention confusion about customization</div><div class="fm-fix">Rewrite documentation completely. Add Loom walkthrough. This single fix resolves 70% of bad reviews.</div></div>
+              <div class="fm"><div class="fm-cause">Mobile is broken</div><div class="fm-signal">Reviews mention mobile layout issues</div><div class="fm-fix">Stop all marketing. Fix every breakpoint before running any more ads or posts. One bad mobile review undoes five good ones.</div></div>
+              <div class="fm"><div class="fm-cause">Overpromised</div><div class="fm-signal">Reviews say "not what I expected"</div><div class="fm-fix">Audit listing copy against actual product. Remove any claims the product doesn't clearly fulfill.</div></div>
+              <div class="fm"><div class="fm-cause">Too hard to customize</div><div class="fm-signal">Reviews say "hard to change colors" or "confusing structure"</div><div class="fm-fix">Rebuild color system around a single CSS variable. Add a "Quick Start" page showing the 5 things buyers change first.</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="acc" onclick="toggle(this)">
+          <div class="acc-h"><span class="acc-ico">😰</span>"Great Product, No Audience" — the Most Common Failure Mode<svg class="acc-arr" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></div>
+          <div class="acc-body">
+            <div class="co amber" style="margin-bottom:12px"><div class="co-i">⚠️</div><div class="co-c"><div class="co-t">The root cause</div><div class="co-b">You treated the product as the hard part and distribution as the easy part. It's the other way around.</div></div></div>
+            <div class="steps">
+              <div class="step"><div class="step-n a">1</div><div class="step-body"><div class="step-t">Post the teardown thread</div><div class="step-d">Write an 8-tweet thread about every decision you made building the template. Post it, pin it, reply to every comment.</div></div></div>
+              <div class="step"><div class="step-n a">2</div><div class="step-body"><div class="step-t">Give away 3 copies publicly</div><div class="step-d">"First 3 people to reply with their product idea get a free copy." Generates engagement and creates buyer spotlights.</div></div></div>
+              <div class="step"><div class="step-n a">3</div><div class="step-body"><div class="step-t">DM 10 founders directly</div><div class="step-d">Find founders who launched AI tools in the last 3 months. "Here's a free copy — I'd love feedback." Five of the ten will reply. Two will post about it.</div></div></div>
+              <div class="step"><div class="step-n a">4</div><div class="step-body"><div class="step-t">Submit to directories</div><div class="step-d">Uneed.app, Fazier, There's An AI For That, ProductHunt. Each takes 15 minutes and can drive passive traffic for months.</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PART 15 -->
+    <section class="section" id="s15">
+      <div class="sh">
+        <div class="sn">Part 15</div>
+        <div class="st"><h2>Moat Expansion — The Relational &amp; Reputational Layer</h2><p>The moats that are genuinely hard to replicate — built through time and public consistency</p></div>
+      </div>
+      <div class="prose">The Template OS gives you a structural moat. But structural moats are replicable over time. The moats that are genuinely hard to replicate are relational and reputational.</div>
+      <div class="accs">
+        <div class="acc open" onclick="toggle(this)">
+          <div class="acc-h"><span class="acc-ico">🏆</span>The Personal Brand Moat<svg class="acc-arr" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></div>
+          <div class="acc-body">
+            <div class="chklist">
+              <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">A recognizable point of view on design</div><div class="chks">Not "I make nice templates" but a stance that some people disagree with. Infinitely more memorable than what everyone agrees with.</div></div></div>
+              <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">A content signature — one recurring post format</div><div class="chks">Weekly teardown, Friday resource thread, monthly retrospective. Consistency of format builds recognition faster than volume.</div></div></div>
+              <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">A visible story arc</div><div class="chks">People follow build-in-public creators not for the product but for the protagonist. Document the wins, false starts, pivots.</div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="acc" onclick="toggle(this)">
+          <div class="acc-h"><span class="acc-ico">📧</span>Audience Ownership as an Asset<svg class="acc-arr" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></div>
+          <div class="acc-body">
+            <div class="prose" style="margin-bottom:8px">Your X following is rented audience. Your email list is owned audience. The difference matters when X changes its algorithm or a competitor enters with a larger following.</div>
+            <div class="cards c3" style="margin-bottom:0">
+              <div class="card"><div class="ci">📬</div><div class="ct">Email List (Primary)</div><div class="cb">Every Gumroad and Lemon Squeezy buyer is automatically on your list. Email once a week with genuine value — not promotions.</div></div>
+              <div class="card"><div class="ci">💬</div><div class="ct">Discord Community (Secondary)</div><div class="cb">Once you have 200+ buyers. Buyers who talk to each other become advocates. Advocates drive referrals without an affiliate program.</div></div>
+              <div class="card"><div class="ci">🏗️</div><div class="ct">Framer Community (Tertiary)</div><div class="cb">Answering questions, sharing components, posting tutorials — builds authority that X followers cannot replicate.</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="acc" onclick="toggle(this)">
+          <div class="acc-h"><span class="acc-ico">🔄</span>The Repeat Buyer Flywheel<svg class="acc-arr" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></div>
+          <div class="acc-body">
+            <div class="prose" style="margin-bottom:8px">Your best distribution channel is your existing customer base. A buyer who had a great experience is worth 10x a cold prospect.</div>
+            <div class="steps">
+              <div class="step"><div class="step-n a">1</div><div class="step-body"><div class="step-t">The spotlight request (Day 7 email)</div><div class="step-d">"If you've launched with the template, I'd love to feature your site. Reply with a link." Feature 1–2 sites per month on X. Buyers love recognition.</div></div></div>
+              <div class="step"><div class="step-n a">2</div><div class="step-body"><div class="step-t">The loyalty discount (permanent 30% off)</div><div class="step-d">Every past buyer gets 30% off the next template, permanently. Automatic and loud — in the Day 14 email and every new announcement.</div></div></div>
+              <div class="step"><div class="step-n a">3</div><div class="step-body"><div class="step-t">The update changelog email</div><div class="step-d">"I just updated [Template Name] — here is what changed." 60%+ open rate. Reminds buyers you exist, reactivates people who went quiet.</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PART 16 -->
+    <section class="section" id="s16">
+      <div class="sh">
+        <div class="sn">Part 16</div>
+        <div class="st"><h2>Where Judgment Matters More Than the Playbook</h2><p>Mechanical execution gets you to $1K–$3K/month. Judgment gets you the rest.</p></div>
+      </div>
+      <div class="co purple">
+        <div class="co-i">🧭</div>
+        <div class="co-c">
+          <div class="co-t">The Honest Framing</div>
+          <div class="co-b">This document can systematize the <em>what</em> and the <em>when</em>. It cannot systematize taste. And taste is what separates people who follow this playbook to $500/month from those who follow it to $10K/month.</div>
+        </div>
+      </div>
+      <div class="prose"><strong>The four judgment calls the playbook cannot make for you:</strong></div>
+      <div class="accs">
+        <div class="acc open" onclick="toggle(this)">
+          <div class="acc-h"><span class="acc-ico">🎯</span>Picking the right nuance within a niche<svg class="acc-arr" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></div>
+          <div class="acc-body">
+            <div class="prose" style="margin-bottom:8px">The Market Entry Scoring Model tells you if a niche is enterable. It cannot tell you which specific angle will resonate. "Minimalist AI tools for developer-founders who hate flashy design" is a nuance — and the nuance is where real positioning lives.</div>
+            <div class="co blue" style="margin-bottom:0"><div class="co-i">💡</div><div class="co-c"><div class="co-t">How to develop it</div><div class="co-b">Spend 2 hours on X finding founders who launched AI tools. Screenshot the 10 products that feel like they belong together aesthetically. Articulate in one sentence what they share. That sentence is your nuance.</div></div></div>
+          </div>
+        </div>
+        <div class="acc" onclick="toggle(this)">
+          <div class="acc-h"><span class="acc-ico">👁️</span>Knowing when design feels "off"<svg class="acc-arr" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></div>
+          <div class="acc-body">
+            <div class="prose" style="margin-bottom:8px">No checklist catches bad design. You either feel it or you don't. Competent sells. Compelling converts at 3x the rate.</div>
+            <div class="co blue" style="margin-bottom:0"><div class="co-i">💡</div><div class="co-c"><div class="co-t">How to develop it</div><div class="co-b">Study 100 landing pages from producthunt.com over two weeks. For each one: what is the one thing that makes this feel right or wrong? After 100 pages, your eye will be faster than any checklist.</div></div></div>
+          </div>
+        </div>
+        <div class="acc" onclick="toggle(this)">
+          <div class="acc-h"><span class="acc-ico">✍️</span>Writing copy that actually resonates<svg class="acc-arr" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></div>
+          <div class="acc-body">
+            <div class="prose" style="margin-bottom:8px">"Finally, a template that does not make you feel like a designer" implies the buyer's frustration, not just their goal. That implication comes from having listened to enough founders to know what they actually feel.</div>
+            <div class="co blue" style="margin-bottom:0"><div class="co-i">💡</div><div class="co-c"><div class="co-t">How to develop it</div><div class="co-b">Before writing a single word of your listing copy, write down 10 complaints a solo founder has about building their landing page. Not goals — complaints. Write your copy as a response to those complaints.</div></div></div>
+          </div>
+        </div>
+        <div class="acc" onclick="toggle(this)">
+          <div class="acc-h"><span class="acc-ico">📡</span>Reading market signals that are not data<svg class="acc-arr" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></div>
+          <div class="acc-body">
+            <div class="prose" style="margin-bottom:8px">Knowing which gut instinct to trust and which to override with data only improves with reps.</div>
+            <div class="co blue" style="margin-bottom:0"><div class="co-i">💡</div><div class="co-c"><div class="co-t">How to develop it</div><div class="co-b">Write a short retrospective after every significant decision: every post that did well, every post that flopped, every sale, every refund. Over time you'll build a personal model that no generic playbook can replicate.</div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="prose"><strong>The things this playbook cannot teach you:</strong></div>
+      <div class="cards c2">
+        <div class="card"><div class="ci">🎨</div><div class="ct">Pattern recognition from exposure</div><div class="cb">The more good design you've consumed, the faster you can produce it. It accumulates over months of deliberate attention.</div></div>
+        <div class="card"><div class="ci">✂️</div><div class="ct">Editing instinct</div><div class="cb">Knowing what to remove is harder than knowing what to add. The best templates are not the most complete — they're the most ruthlessly edited.</div></div>
+        <div class="card"><div class="ci">🗣️</div><div class="ct">Authentic voice in content</div><div class="cb">Readers can tell the difference between a real person thinking out loud and a creator following a content formula. The formula gets likes. The voice gets buyers.</div></div>
+        <div class="card"><div class="ci">⏳</div><div class="ct">Tolerance for the period before it works</div><div class="cb">Every template business has a 4–8 week period where you're doing everything right and the numbers aren't moving. Many people stop here. The ones who don't are who Part 8 is written for.</div></div>
+      </div>
+    </section>
+
+    <!-- PART 17 -->
+    <section class="section" id="s17">
+      <div class="sh">
+        <div class="sn">Part 17</div>
+        <div class="st"><h2>Speed vs Quality — The Shipping Decision Framework</h2><p>Perfectionism masquerading as quality standards is the most common execution failure</p></div>
+      </div>
+      <div class="co blue">
+        <div class="co-i">⚖️</div>
+        <div class="co-c">
+          <div class="co-t">The Core Rule</div>
+          <div class="co-b">Ship faster when distribution is the bottleneck. Polish longer when product quality is the bottleneck. <strong>Most first-time template builders have a distribution bottleneck, not a quality bottleneck</strong> — which means their default should be "ship faster."</div>
+        </div>
+      </div>
+      <div class="cards c2">
+        <div class="card ac">
+          <div class="ci">⚡</div>
+          <div class="ct">Ship at 80% when...</div>
+          <div class="cb">
+            You have no existing audience · You're in a fast-moving category · Your competitive gap is positioning, not execution · It's your first template (the gap between what you think the market wants and what it buys is enormous on your first product)
+            <br><br><strong>What "80%" means:</strong> All sections present and functional. Mobile tested. Documentation covers core 3 use cases. Dark/light works. Kitchen Sink page exists. Animations present but not perfected.
+          </div>
+        </div>
+        <div class="card">
+          <div class="ci">💎</div>
+          <div class="ct">Push to 95% when...</div>
+          <div class="cb">
+            You're entering a mature category with high-quality incumbents · You have an existing audience waiting · Your differentiation claim is design quality · You're building template 3 or 4
+            <br><br><strong>What "95%" means:</strong> Every section refined. Tested at all 6 breakpoints. Comprehensive documentation with Loom. 3 people outside your circle used it without asking you a single question.
+          </div>
+        </div>
+      </div>
+      <div class="co red">
+        <div class="co-i">🚫</div>
+        <div class="co-c">
+          <div class="co-t">The One Rule That Overrides Everything</div>
+          <div class="co-b"><strong>Never ship with broken mobile.</strong> Everything else is negotiable. A template with imperfect animations and great mobile converts. A template with perfect animations and broken mobile generates refund requests and 2-star reviews that take months to bury. Mobile is the non-negotiable 100% gate.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PART 18 -->
+    <section class="section" id="s18">
+      <div class="sh">
+        <div class="sn">Part 18</div>
+        <div class="st"><h2>How to Become the Default Choice in a Micro-Niche</h2><p>The difference between being one of the good options and being the obvious first choice</p></div>
+      </div>
+      <div class="co purple">
+        <div class="co-i">🎯</div>
+        <div class="co-c">
+          <div class="co-t">The Target State</div>
+          <div class="co-b">When a solo founder types "Framer template" into any search bar, your name or product should be the first thing they find, the first thing their peers recommend, and the first thing they think of. Achievable in a micro-niche with 6–12 months of deliberate positioning.</div>
+        </div>
+      </div>
+      <div class="accs">
+        <div class="acc open" onclick="toggle(this)">
+          <div class="acc-h"><span class="acc-ico">🥇</span>Early Positioning Dominance<svg class="acc-arr" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></div>
+          <div class="acc-body">
+            <div class="chklist">
+              <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">Name your positioning explicitly and publicly</div><div class="chks">"I build Framer templates for solo founders shipping AI products" — in your X bio, listing tagline, and website headline. State the claim before a competitor does.</div></div></div>
+              <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">Create the category if it doesn't exist</div><div class="chks">If no one is talking about "AI founder templates" as a distinct category, you can name it, define it, and become its default representative.</div></div></div>
+              <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">Publish content that owns the topic</div><div class="chks">Write the definitive thread on "what makes an AI SaaS landing page convert." Become the person who produces the reference content in your niche, not just the product.</div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="acc" onclick="toggle(this)">
+          <div class="acc-h"><span class="acc-ico">🎯</span>Audience Density, Not Just Volume<svg class="acc-arr" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></div>
+          <div class="acc-body">
+            <div class="prose" style="margin-bottom:8px">500 followers who are all solo founders building AI tools is more commercially valuable than 5,000 followers who are a general mix.</div>
+            <div class="chklist">
+              <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">Follow and engage with your exact buyer persona first</div><div class="chks">Find every account that posted about launching an AI tool in the last 30 days. Follow, reply genuinely, DM the ones clearly in your niche.</div></div></div>
+              <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">Create content that filters for your buyer</div><div class="chks">"How I designed the pricing section for a founder with no design budget" attracts founders. "Building in public" attracts other builders. Grow slower with higher buyer density.</div></div></div>
+              <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">Reject the temptation to broaden</div><div class="chks">Broadening your position to capture more buyers usually captures fewer. You lose the specificity that made your early buyers choose you.</div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="acc" onclick="toggle(this)">
+          <div class="acc-h"><span class="acc-ico">🏅</span>Niche Authority Signals That Compound<svg class="acc-arr" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg></div>
+          <div class="acc-body">
+            <div class="chklist">
+              <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">"Featured in" or "Used by" logos</div><div class="chks">5 recognizable logos from products your buyer persona has heard of do more than 100 anonymous testimonials.</div></div></div>
+              <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">Cited by peers</div><div class="chks">When other creators reference your template or content, that citation is a stronger signal than anything you can say about yourself.</div></div></div>
+              <div class="chk" onclick="toggleChk(this)"><div class="chkb"><svg width="9" height="7" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="chkl">Milestone transparency</div><div class="chks">"100 templates sold," "first $10K month" — signals real people are buying and creates self-reinforcing perception of authority.</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PART 19 -->
+    <section class="section" id="s19">
+      <div class="sh">
+        <div class="sn">Part 19</div>
+        <div class="st"><h2>Ceiling Awareness — What Happens After $10K/Month</h2><p>The decisions you make at $5K/month determine whether $10K/month is a ceiling or a floor</p></div>
+      </div>
+      <div class="prose"><strong>The four ceiling triggers — when two or more appear simultaneously, act proactively:</strong></div>
+      <div class="cards c2">
+        <div class="card"><div class="ci">📉</div><div class="ct">Trigger 1: Flat growth for 3 consecutive months</div><div class="cb">Flat with consistent content output and no major competitor entry means you've captured most accessible demand in your current niche.</div></div>
+        <div class="card"><div class="ci">⚔️</div><div class="ct">Trigger 2: Competitors iterating faster</div><div class="cb">New templates in your category launching with higher quality at lower prices. You're no longer the default — you're the incumbent being disrupted.</div></div>
+        <div class="card"><div class="ci">💬</div><div class="ct">Trigger 3: Best customers asking for what you don't offer</div><div class="cb">When buyers consistently ask about setup services, custom modifications, or consulting — that's your product roadmap, not noise.</div></div>
+        <div class="card"><div class="ci">📊</div><div class="ct">Trigger 4: Content engagement plateaued despite consistent posting</div><div class="cb">Your audience has learned your patterns and novelty has worn off. Distribution ceiling, not product ceiling. Requires content evolution, not more content.</div></div>
+      </div>
+      <div class="prose"><strong>The four evolution paths — choose based on where buyers are pulling you:</strong></div>
+      <div class="paths">
+        <div class="path">
+          <div class="path-n">Path 1</div>
+          <div class="path-t">🏗️ Template Specialist</div>
+          <div class="path-b">Instead of expanding to new niches, go further into your existing one. Build the complete AI founder stack: landing page, changelog, investor deck, onboarding flow. Become the single system a specific buyer type uses from zero to funded.</div>
+          <div class="path-for">Best for: Creators who love the product work and have strong niche positioning.</div>
+        </div>
+        <div class="path">
+          <div class="path-n">Path 2</div>
+          <div class="path-t">🎨 Template + Agency Hybrid</div>
+          <div class="path-b">Your template business is your best lead generation tool for a design service. A template buyer converting to a $500–$2,000 setup service is your highest-value customer by far.</div>
+          <div class="path-for">Best for: Creators with strong client communication skills who want to grow without more products.</div>
+        </div>
+        <div class="path">
+          <div class="path-n">Path 3</div>
+          <div class="path-t">📚 Template + Course Creator</div>
+          <div class="path-b">Everything you know about building templates, positioning, and growing on X is teachable. A course on "how to build and sell Framer templates" is a natural extension of your brand authority.</div>
+          <div class="path-for">Best for: Creators who enjoy teaching and have built a strong personal brand through build-in-public content.</div>
+        </div>
+        <div class="path">
+          <div class="path-n">Path 4</div>
+          <div class="path-t">🚀 Template → SaaS</div>
+          <div class="path-b">Your template business gives you three things most SaaS founders pay years to acquire: a specific niche, an audience in that niche, and deep knowledge of what they need. A SaaS product is a warm launch into a validated market.</div>
+          <div class="path-for">Best for: Creators interested in building software and wanting to use the template business as a launchpad.</div>
+        </div>
+      </div>
+      <div class="co amber"><div class="co-i">⏱️</div><div class="co-c"><div class="co-t">The Transition Timing Rule</div><div class="co-b">The right time to begin exploring your next evolution is when you are at <strong>70–80% of your current ceiling</strong> — while you still have momentum, cash flow, and audience attention to direct toward something new. Starting a course at $2K/month and growing is a distraction. Starting at $8K/month and plateauing is strategic.</div></div></div>
+    </section>
+
+    <!-- FINAL WORD -->
+    <div class="final">
+      <div class="final-eye">✦ The Final Word — v4 Final Edition</div>
+      <div class="final-t">The difference between following a playbook and building a business</div>
+      <div class="final-b">This document covers the strategy, the build, the pricing, the distribution, the competitive intelligence, the failure modes, the moats, the judgment calls, and the ceiling. What it cannot cover is the version of you that sits down tomorrow and either starts the validation post or does not.<br><br>The gap between the people this works for and the people it does not is not intelligence, taste, or even work ethic. It is the <strong>willingness to act before it feels safe</strong> — to post before the template is done, to launch before it feels ready, to treat the first 50 buyers as partners in building something rather than judges of something finished.<br><br><strong>No document finishes a business. You do.</strong></div>
+    </div>
+
+  </div>
+</main>
+</div>
+
+<button class="mob-btn" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+
+<script>
+function toggleTheme(){
+  const dark=document.documentElement.getAttribute('data-theme')==='dark';
+  document.documentElement.setAttribute('data-theme',dark?'light':'dark');
+  document.getElementById('ticon').textContent=dark?'🌙':'☀️';
+  document.getElementById('tlbl').textContent=dark?'Dark mode':'Light mode';
+}
+if(window.matchMedia('(prefers-color-scheme: dark)').matches){
+  document.documentElement.setAttribute('data-theme','dark');
+  document.getElementById('ticon').textContent='☀️';
+  document.getElementById('tlbl').textContent='Light mode';
+}
+function setNav(el,name){
+  document.querySelectorAll('.nl').forEach(l=>l.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('cur').textContent=name;
+}
+const allSecs=['s11','s0','s1','s2','s3','s4','s5','s6','s7','s8','s9','s10','s12','s13','s14','s15','s16','s17','s18','s19'];
+const allNames=['Skill Gap Disclosure','Strategic Overview','Finding Your Idea','Design & Build','Template OS','Pricing & Positioning','Distribution','Build in Public','Conversion Optimization','Scaling Revenue','Master Timeline','10 Principles','Anti-Saturation','Competitive Intelligence','Failure Mode Fixes','Moat Expansion','Judgment Layer','Speed vs Quality','Default Choice','Ceiling Awareness'];
+window.addEventListener('scroll',()=>{
+  const pct=window.scrollY/(document.documentElement.scrollHeight-window.innerHeight);
+  const p=Math.round(pct*100);
+  document.getElementById('sf').style.width=p+'%';
+  document.getElementById('pf').style.width=p+'%';
+  document.getElementById('pp').textContent=p+'%';
+  let cur='';
+  allSecs.forEach(id=>{const el=document.getElementById(id);if(el&&window.scrollY>=el.offsetTop-120)cur=id;});
+  if(cur){
+    document.querySelectorAll('.nl').forEach(l=>l.classList.remove('active'));
+    const idx=allSecs.indexOf(cur);
+    const link=document.querySelector('.nl[href="#'+cur+'"]');
+    if(link){link.classList.add('active');document.getElementById('cur').textContent=allNames[idx];}
+  }
+},{passive:true});
+function toggle(el){el.classList.toggle('open');}
+function toggleChk(el){el.classList.toggle('done');}
+function expandAll(){document.querySelectorAll('.acc').forEach(a=>a.classList.add('open'));}
+function markDone(){document.querySelectorAll('.chk').forEach(c=>c.classList.add('done'));}
+</script>
+</body>
+</html>
