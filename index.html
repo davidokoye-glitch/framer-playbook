@@ -113,7 +113,7 @@
       flex-direction: column;
       overflow-y: auto;
       z-index: 100;
-      transition: transform .25s, left .25s;
+      transition: left .25s ease, transform .25s ease;
     }
 
     .sidebar::-webkit-scrollbar {
@@ -1670,6 +1670,10 @@
         transform: translateX(-100%);
       }
 
+      .sidebar.hidden {
+        transform: translateX(-100%);
+      }
+
       .sidebar.open {
         transform: translateX(0);
       }
@@ -2086,7 +2090,8 @@
           </div>
           <div class="prose">The template marketplace is not crowded — it is <strong>mis-positioned</strong>. Most
             creators treat templates as aesthetic products. The ones clearing $5K–$10K/month treat them as
-            <strong>decision-compression tools</strong> for a specific buyer.</div>
+            <strong>decision-compression tools</strong> for a specific buyer.
+          </div>
           <div class="co blue">
             <div class="co-i">💡</div>
             <div class="co-c">
@@ -2864,7 +2869,8 @@
                       <div class="step-d">Use this structure for each: <strong>Observation</strong> (something specific
                         you noticed) → <strong>Implication</strong> (why it matters for your buyer) →
                         <strong>Contrast</strong> (what most people do instead). Delete any post where you can't
-                        complete all three — the insight isn't sharp enough.</div>
+                        complete all three — the insight isn't sharp enough.
+                      </div>
                     </div>
                   </div>
                   <div class="step">
@@ -3316,7 +3322,8 @@
               <div class="co-b">Most builders slip 2–4 weeks somewhere in the first two months. A Week 6 launch that
                 slips to Week 9 is not failure. Launching at Week 6 with broken mobile and no documentation is.
                 <strong>Never compress validation (Week 0) or documentation (Week 4). Compress Week 3 polish
-                  instead.</strong></div>
+                  instead.</strong>
+              </div>
             </div>
           </div>
           <div class="tl">
