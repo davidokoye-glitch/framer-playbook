@@ -1676,20 +1676,20 @@
       inset: 0;
       z-index: 99;
       background: rgba(0, 0, 0, 0.45);
-      backdrop-filter: blur(2px);
     }
 
     @media(max-width:860px) {
       .sidebar {
-        transform: translateX(-100%);
+        transform: translateX(-100%) !important;
+        left: 0 !important;
       }
 
       .sidebar.hidden {
-        transform: translateX(-100%);
+        transform: translateX(-100%) !important;
       }
 
       .sidebar.open {
-        transform: translateX(0);
+        transform: translateX(0) !important;
       }
 
       .main {
@@ -4528,6 +4528,7 @@
       const sb = document.getElementById('sidebar');
       const mb = document.getElementById('menuBtn');
       sb.style.left = '0';
+      sb.classList.remove('open');
       mb.style.display = 'none';
       document.querySelector('.main').style.marginLeft = '280px';
       document.querySelector('.scbar').style.left = '280px';
@@ -4537,10 +4538,26 @@
       const sb = document.getElementById('sidebar');
       const mb = document.getElementById('menuBtn');
       sb.style.left = '-280px';
+      sb.classList.remove('open');
       mb.style.display = 'flex';
       document.querySelector('.main').style.marginLeft = '0';
       document.querySelector('.scbar').style.left = '0';
     }
+
+    function initSidebar() {
+      const sb = document.getElementById('sidebar');
+      const isMobile = window.innerWidth <= 860;
+      if (isMobile) {
+        sb.style.left = '';
+        sb.classList.remove('open');
+      }
+    }
+
+    // Initialize sidebar on load
+    initSidebar();
+    
+    // Also re-init on resize
+    window.addEventListener('resize', initSidebar);
 
     function toggleSidebar() {
       const sb = document.getElementById('sidebar');
@@ -4549,13 +4566,15 @@
 
       if (isMobile) {
         // Mobile: use .open class with transform
+        // First ensure left doesn't interfere
+        sb.style.left = '';
         sb.classList.toggle('open');
         if (sbBack) {
           sbBack.classList.toggle('on');
         }
       } else {
         // Desktop: use left property
-        if (sb.style.left === '-280px') {
+        if (sb.style.left === '-280px' || sb.style.left === '') {
           showSidebar();
         } else {
           hideSidebar();
